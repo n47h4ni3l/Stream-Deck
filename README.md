@@ -64,3 +64,9 @@ chmod +x chromium/Chromium-x86-64.AppImage
 * In Desktop Mode → open Steam
 * Add `StreamDeckLauncher.sh` as a Non-Steam Game
 * Now run it in Gaming Mode
+
+Installation complete! Launch the script from your Steam library and sign in to your favorite streaming services.
+
+---
+
+Service logos remain the property of their respective owners. This project has no affiliation with or endorsement from any streaming service.

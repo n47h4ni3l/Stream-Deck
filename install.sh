@@ -15,64 +15,14 @@ if command -v steamos-readonly >/dev/null 2>&1; then
     sudo steamos-readonly disable || true
 fi
 
-# Detect package manager
-if [ "$IS_DECK" = true ]; then
-    PM="flatpak"
-elif command -v pacman >/dev/null 2>&1; then
-    PM="pacman"
-elif command -v apt-get >/dev/null 2>&1; then
-    PM="apt"
-else
-    PM=""
+# Ensure Flatpak is available
+if ! command -v flatpak >/dev/null 2>&1; then
+    echo "Flatpak is required but not found. Please install Flatpak and re-run this script." >&2
+    exit 1
 fi
 
-# Determine missing packages
-packages=()
-NODE_FLATPAK=false
-command -v git >/dev/null 2>&1 || packages+=(git)
-
-if ! command -v node >/dev/null 2>&1; then
-    if [ "$IS_DECK" = true ] && command -v flatpak >/dev/null 2>&1; then
-        NODE_FLATPAK=true
-    else
-        packages+=(nodejs)
-    fi
-fi
-
-if ! command -v npm >/dev/null 2>&1; then
-    if [ "$NODE_FLATPAK" = false ]; then
-        packages+=(npm)
-    fi
-fi
-
-if [ ${#packages[@]} -gt 0 ]; then
-    echo "Installing packages: ${packages[*]}"
-    if [ "$PM" = "pacman" ]; then
-        if ! sudo pacman -Sy --needed --noconfirm "${packages[@]}"; then
-            echo "pacman failed to synchronize packages." >&2
-            echo "Check your network connection and consider running 'steamos-readonly disable'." >&2
-            if command -v steamos-readonly >/dev/null 2>&1; then
-                sudo steamos-readonly disable
-            fi
-            sudo pacman -Sy || { echo "pacman sync failed." >&2; exit 1; }
-            sudo pacman -Sy --needed --noconfirm "${packages[@]}" || { echo "Failed to install packages with pacman." >&2; exit 1; }
-        fi
-    elif [ "$PM" = "apt" ]; then
-        sudo apt-get update
-        sudo apt-get install -y "${packages[@]}"
-    elif [ "$PM" = "flatpak" ]; then
-        echo "Flatpak detected -- skipping system package install"
-    else
-        echo "No supported package manager found."
-        echo "Please install: ${packages[*]} and re-run this script."
-        exit 1
-    fi
-else
-    echo "Required packages already installed."
-fi
-
-# Install Node via Flatpak on Steam Deck if needed
-if [ "$NODE_FLATPAK" = true ]; then
+# Install Node via Flatpak if needed
+if ! command -v node >/dev/null 2>&1 || ! command -v npm >/dev/null 2>&1; then
     echo "Installing Node.js via Flatpak..."
     if ! flatpak remotes --user | grep -q '^flathub\\>' ; then
         flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo

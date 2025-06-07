@@ -47,7 +47,7 @@ git clone https://github.com/n47h4ni3l/Stream-Deck.git
 cd Stream-Deck
 ```
 
-2. Run the installer script to set up requirements and download Chromium. On SteamOS the script automatically disables the read-only filesystem and installs Node via **Flatpak**. `pacman` is only used on other Arch-based systems where the script will disable read-only mode and retry if a sync fails:
+2. Run the installer script to set up requirements and download Chromium. The script installs Node via **Flatpak** and handles the Steam Deck read-only filesystem automatically:
 
 ```bash
 ./install.sh

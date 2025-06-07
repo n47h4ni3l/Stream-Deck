@@ -5,7 +5,7 @@
     <title>Stream Deck Launcher</title>
     <style>
         body {
-            background-color: #121212;
+            background-color: #1b2838; /* Steam dark purple/blue */
             color: white;
             font-family: Arial, sans-serif;
             display: flex;
@@ -20,17 +20,18 @@
             margin: 10px;
             width: 150px;
             height: 150px;
-            background-color: #1f1f1f;
+            background-color: #2a3b4c;
             border-radius: 16px;
             display: flex;
             justify-content: center;
             align-items: center;
             cursor: pointer;
-            transition: transform 0.2s, background-color 0.2s;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
         }
         .tile:hover {
             transform: scale(1.1);
-            background-color: #2a2a2a;
+            box-shadow: 0 0 20px rgba(102, 153, 255, 0.8);
         }
         .tile img {
             max-width: 80%;

@@ -3,8 +3,8 @@ const { spawn } = require('child_process');
 const path = require('path');
 const fs = require('fs');
 
-// Path to bundled Chromium AppImage
-const chromiumPath = path.join(__dirname, 'chromium/Chromium-x86-64.AppImage');
+// Flatpak command for Ungoogled Chromium
+const chromiumCommand = ['flatpak', 'run', 'com.github.Eloston.UngoogledChromium'];
 
 // No-sleep blocker
 let psbId = null;
@@ -68,7 +68,11 @@ function launchService(serviceName, event) {
     saveUsage();
 
     try {
-      const child = spawn(chromiumPath, [url], { detached: true, stdio: 'ignore' });
+      const child = spawn(
+        chromiumCommand[0],
+        [...chromiumCommand.slice(1), url],
+        { detached: true, stdio: 'ignore' }
+      );
       child.unref();
     } catch (err) {
       console.error('Failed to launch service:', err);
@@ -142,5 +146,5 @@ module.exports = {
   usageFile,
   usageData,
   launchService,
-  chromiumPath
+  chromiumCommand
 };

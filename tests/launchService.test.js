@@ -18,7 +18,7 @@ jest.mock('child_process', () => {
   return { spawn };
 });
 
-const { launchService, services, usageData, usageFile, chromiumPath } = require('../main');
+const { launchService, services, usageData, usageFile, chromiumCommand } = require('../main');
 const { spawn } = require('child_process');
 
 afterEach(() => {
@@ -31,8 +31,8 @@ describe('launchService', () => {
   test('spawns chromium with correct URL', () => {
     launchService('Netflix');
     expect(spawn).toHaveBeenCalledWith(
-      chromiumPath,
-      [services['Netflix']],
+      chromiumCommand[0],
+      [...chromiumCommand.slice(1), services['Netflix']],
       { detached: true, stdio: 'ignore' }
     );
   });

@@ -23,6 +23,10 @@ flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flat
 echo "Installing Node.js (via Flatpak)..."
 flatpak install -y flathub io.nodejs.NodeJS
 
+# Install Ungoogled Chromium via Flatpak
+echo "Installing Ungoogled Chromium (via Flatpak)..."
+flatpak install -y flathub com.github.Eloston.UngoogledChromium
+
 # Clone repo
 echo "Cloning Stream Deck Launcher repo..."
 if [ -d Stream-Deck ]; then
@@ -35,14 +39,6 @@ cd Stream-Deck
 # Install dependencies via Flatpak Node.js
 echo "Running npm install (via Flatpak Node.js)..."
 flatpak run io.nodejs.NodeJS npm install
-
-# Make Chromium AppImage executable
-echo "Making Chromium executable..."
-if [ ! -f chromium/Chromium-x86-64.AppImage ]; then
-  echo "Chromium AppImage not found. Please place it in the 'chromium' directory." >&2
-  exit 1
-fi
-chmod +x chromium/Chromium-x86-64.AppImage
 
 # Launch Stream Deck
 echo "Launching Stream Deck Launcher..."

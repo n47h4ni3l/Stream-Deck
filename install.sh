@@ -1,7 +1,19 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
+set -euo pipefail
 
 echo "Stream Deck Launcher Installer (Steam Deck Safe Version)"
 echo "--------------------------------------------"
+
+# Ensure required commands are available
+command -v flatpak >/dev/null 2>&1 || {
+  echo "flatpak is required but not installed. Aborting." >&2
+  exit 1
+}
+command -v git >/dev/null 2>&1 || {
+  echo "git is required but not installed. Aborting." >&2
+  exit 1
+}
 
 # Add Flathub if not already present
 echo "Checking Flathub..."
@@ -13,7 +25,11 @@ flatpak install -y flathub io.nodejs.NodeJS
 
 # Clone repo
 echo "Cloning Stream Deck Launcher repo..."
-git clone https://github.com/n47h4ni3l/Stream-Deck.git
+if [ -d Stream-Deck ]; then
+  echo "Directory 'Stream-Deck' already exists, skipping clone."
+else
+  git clone https://github.com/n47h4ni3l/Stream-Deck.git
+fi
 cd Stream-Deck
 
 # Install dependencies via Flatpak Node.js
@@ -22,6 +38,10 @@ flatpak run io.nodejs.NodeJS npm install
 
 # Make Chromium AppImage executable
 echo "Making Chromium executable..."
+if [ ! -f chromium/Chromium-x86-64.AppImage ]; then
+  echo "Chromium AppImage not found. Please place it in the 'chromium' directory." >&2
+  exit 1
+fi
 chmod +x chromium/Chromium-x86-64.AppImage
 
 # Launch Stream Deck

@@ -22,6 +22,7 @@ const { launchService, services, usageData, usageFile, chromiumCommand } = requi
 const { spawn } = require('child_process');
 
 afterEach(() => {
+  const { spawn } = require('child_process');
   spawn.mockClear();
   if (fs.existsSync(usageFile)) fs.unlinkSync(usageFile);
   Object.keys(usageData).forEach(k => delete usageData[k]);
@@ -51,5 +52,24 @@ describe('launchService', () => {
 
     expect(() => launchService('Netflix', event)).not.toThrow();
     expect(event.sender.send).toHaveBeenCalledWith('launch-service-error', 'Netflix');
+  });
+
+  test('uses CHROMIUM_CMD environment variable when set', () => {
+    jest.resetModules();
+    process.env.CHROMIUM_CMD = 'custom-chrome --foo';
+
+    const { spawn } = require('child_process');
+    const { launchService: launchWithEnv, services, chromiumCommand } = require('../main');
+
+    launchWithEnv('Prime');
+
+    expect(chromiumCommand).toEqual(['custom-chrome', '--foo']);
+    expect(spawn).toHaveBeenCalledWith(
+      chromiumCommand[0],
+      [...chromiumCommand.slice(1), services['Prime']],
+      { detached: true, stdio: 'ignore' }
+    );
+
+    delete process.env.CHROMIUM_CMD;
   });
 });

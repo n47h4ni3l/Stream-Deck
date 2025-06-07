@@ -66,6 +66,18 @@ and then run `./install.sh` again.
 
 Installation complete! Launch from your Steam library and sign in to your favorite streaming services.
 
+### Custom Browser Command
+
+By default the launcher starts Ungoogled Chromium via Flatpak. Set the
+`CHROMIUM_CMD` environment variable to override the browser command. The value
+is split on whitespace and used as the executable and arguments.
+
+Example:
+
+```bash
+CHROMIUM_CMD="/usr/bin/chromium --ozone-platform=wayland" ./StreamDeckLauncher.sh
+```
+
 ---
 
 ## Development

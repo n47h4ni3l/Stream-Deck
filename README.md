@@ -30,51 +30,26 @@ Built with Electron — controller-friendly UI, persistent login, usage tracking
 ## Installation & Running
 **QUICK INSTALL (Steam Deck & Linux)**
 
-1. Install Requirements:
+1. Clone Stream Deck Launcher:
 
-```
-sudo pacman -S git nodejs npm
-```
-
-Or via Discover:
-
-* Git
-* Node.js + npm
-
-2. Download Stream Deck Launcher:
-
-```
+```bash
 git clone https://github.com/n47h4ni3l/Stream-Deck.git
 cd Stream-Deck
 ```
 
-3. Install dependencies:
+2. Run the installer script to set up requirements and download Chromium:
 
-```
-npm install
-```
-
-4. Download Chromium AppImage (not included):
-
-Download `Chromium-x86-64.AppImage` and place it at `chromium/Chromium-x86-64.AppImage`.
-
-5. Make Chromium executable:
-
-```
-chmod +x chromium/Chromium-x86-64.AppImage
+```bash
+./install.sh
 ```
 
-6. Launch Stream Deck:
+3. Launch Stream Deck:
 
-```
+```bash
 ./StreamDeckLauncher.sh
 ```
 
-7. Add to Steam:
-
-* In Desktop Mode → open Steam
-* Add `StreamDeckLauncher.sh` as a Non-Steam Game
-* Now run it in Gaming Mode
+4. (Optional) add `StreamDeckLauncher.sh` to Steam to use in Gaming Mode.
 
 Installation complete! Launch from your Steam library and sign in to your favorite streaming services.
 

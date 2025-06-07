@@ -70,6 +70,8 @@ Installation complete! Launch from your Steam library and sign in to your favori
 
 ## Development
 
+This project uses **Node.js 18** as specified in `.nvmrc` and the CI workflow.
+
 Install Node.js dependencies and run the test and lint tasks:
 
 ```bash

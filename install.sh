@@ -56,6 +56,9 @@ fi
 # Install Node via Flatpak on Steam Deck if needed
 if [ "$NODE_FLATPAK" = true ]; then
     echo "Installing Node.js via Flatpak..."
+    if ! flatpak remotes --user | grep -q '^flathub\\>' ; then
+        flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+    fi
     flatpak install -y --user flathub org.nodejs.Node
     NPM_CMD="flatpak run --command=npm org.nodejs.Node"
 else

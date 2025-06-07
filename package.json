@@ -11,12 +11,10 @@
   },
   "author": "N47H4NI3L <74298967+n47h4ni3l@users.noreply.github.com>",
   "license": "MIT",
-  "dependencies": {
-    "electron": "^25.3.1"
-  },
   "devDependencies": {
     "jest": "^29.7.0",
     "eslint": "^8.56.0",
-    "electron-builder": "^24.6.0"
+    "electron-builder": "^24.6.0",
+    "electron": "^25.3.1"
   }
 }

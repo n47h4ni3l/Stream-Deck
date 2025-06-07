@@ -94,19 +94,9 @@ echo "Installing desktop shortcut..."
 
 desktop_file_target="$HOME/.local/share/applications/StreamDeckLauncher.desktop"
 
-cat > "$desktop_file_target" <<EOF
-[Desktop Entry]
-Version=1.0
-Type=Application
-Name=Stream Deck Launcher
-Comment=Unified streaming launcher for Steam Deck
-Exec=$HOME/Stream-Deck/StreamDeckLauncher.sh
-Path=$HOME/Stream-Deck
-Icon=$HOME/Stream-Deck/icons/netflix.png
-Terminal=false
-Categories=Utility;
-StartupNotify=false
-EOF
+echo "Copying StreamDeckLauncher.desktop to $desktop_file_target..."
+mkdir -p "$(dirname "$desktop_file_target")"
+cp StreamDeckLauncher.desktop "$desktop_file_target"
 
 chmod +x "$desktop_file_target"
 

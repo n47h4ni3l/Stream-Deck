@@ -82,6 +82,16 @@ npm run lint
 
 `npm install` installs Jest and ESLint from `devDependencies`.
 
+## Adding a Service
+
+1. Add the service URL to the `services` object in [`main.js`](main.js). Use the
+   desired display name as the key.
+2. Place a `150x150` PNG icon in the `icons/` directory. Filenames are derived
+   from the service name by converting it to lowercase and stripping all
+   non-alphanumeric characters, as done in `index.html`. For example, an icon for
+   **Pluto TV** must be saved as `plutotv.png`.
+3. Restart the launcher or run `npm start` to see the new tile.
+
 ---
 
 Service logos remain the property of their respective owners. This project has no affiliation with or endorsement from any streaming service.

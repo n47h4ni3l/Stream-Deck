@@ -10,12 +10,13 @@ Download and verify the installer script:
 ```bash
 curl -fsSL -o /tmp/stream-deck-install.sh \
   https://raw.githubusercontent.com/n47h4ni3l/Stream-Deck/main/install.sh
-echo "b7911735f3fb704f71b11b10777a3c529dba557e6c139d8f260f9dec1c0a679f  /tmp/stream-deck-install.sh" | sha256sum -c -
+echo "e8dc5a05189fecffeeb340b8269dd239bf6615fea85c5f311a65c49fb20b09c7  /tmp/stream-deck-install.sh" | sha256sum -c -
 bash /tmp/stream-deck-install.sh
 ```
 
 The checksum check ensures the script has not been tampered with before it
 installs dependencies and launches the Stream Deck Launcher.
+The value changes whenever `install.sh` is updated, so recompute the hash if you download a new version.
 
 ---
 

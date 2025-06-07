@@ -55,6 +55,10 @@ if [ ${#packages[@]} -gt 0 ]; then
         sudo apt-get install -y "${packages[@]}"
     elif [ "$PM" = "flatpak" ]; then
         echo "Flatpak detected -- skipping system package install"
+    else
+        echo "No supported package manager found."
+        echo "Please install: ${packages[*]} and re-run this script."
+        exit 1
     fi
 else
     echo "Required packages already installed."

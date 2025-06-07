@@ -47,7 +47,7 @@ git clone https://github.com/n47h4ni3l/Stream-Deck.git
 cd Stream-Deck
 ```
 
-2. Run the installer script to set up requirements and download Chromium. If `pacman` fails to sync (common on SteamOS due to a read-only filesystem), the script now attempts to disable the read-only mode and retry automatically:
+2. Run the installer script to set up requirements and download Chromium. When SteamOS is detected the script installs Node via **Flatpak** and skips the read-only workaround. `pacman` is only used on other Arch-based systems where the script will disable read-only mode and retry if a sync fails:
 
 ```bash
 ./install.sh

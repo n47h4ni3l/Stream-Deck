@@ -55,7 +55,7 @@ fi
 
 # Install Ungoogled Chromium via Flatpak
 echo "Installing Ungoogled Chromium (via Flatpak)..."
-flatpak install -y --system flathub com.github.Eloston.UngoogledChromium
+flatpak install -y --system flathub io.github.ungoogled_software.ungoogled_chromium
 
 # Clone repo
 echo "Cloning Stream Deck Launcher repo..."

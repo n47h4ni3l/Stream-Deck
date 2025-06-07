@@ -36,7 +36,17 @@ let usageData = {};
 // Load usage data
 function loadUsage() {
   if (fs.existsSync(usageFile)) {
-    usageData = JSON.parse(fs.readFileSync(usageFile));
+    try {
+      usageData = JSON.parse(fs.readFileSync(usageFile));
+    } catch (err) {
+      console.warn('Failed to parse usage data, resetting.', err);
+      usageData = {};
+      try {
+        fs.unlinkSync(usageFile);
+      } catch {
+        // ignore if unable to remove
+      }
+    }
   } else {
     usageData = {};
   }

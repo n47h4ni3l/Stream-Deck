@@ -52,6 +52,8 @@ describe('launchService', () => {
 
     expect(() => launchService('Netflix', event)).not.toThrow();
     expect(event.sender.send).toHaveBeenCalledWith('launch-service-error', 'Netflix');
+    expect(usageData['Netflix']).toBeUndefined();
+    expect(fs.existsSync(usageFile)).toBe(false);
   });
 
   test('uses CHROMIUM_CMD environment variable when set', () => {

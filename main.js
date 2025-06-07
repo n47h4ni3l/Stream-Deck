@@ -66,22 +66,24 @@ function saveUsage() {
 // Launch a service URL in Chromium and track usage
 function launchService(serviceName, event) {
   const url = services[serviceName];
-  if (url) {
+  if (!url) {
+    return;
+  }
+
+  try {
+    const child = spawn(
+      chromiumCommand[0],
+      [...chromiumCommand.slice(1), url],
+      { detached: true, stdio: 'ignore' }
+    );
+    child.unref();
+
     usageData[serviceName] = (usageData[serviceName] || 0) + 1;
     saveUsage();
-
-    try {
-      const child = spawn(
-        chromiumCommand[0],
-        [...chromiumCommand.slice(1), url],
-        { detached: true, stdio: 'ignore' }
-      );
-      child.unref();
-    } catch (err) {
-      console.error('Failed to launch service:', err);
-      if (event && event.sender && typeof event.sender.send === 'function') {
-        event.sender.send('launch-service-error', serviceName);
-      }
+  } catch (err) {
+    console.error('Failed to launch service:', err);
+    if (event && event.sender && typeof event.sender.send === 'function') {
+      event.sender.send('launch-service-error', serviceName);
     }
   }
 }

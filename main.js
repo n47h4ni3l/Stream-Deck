@@ -4,7 +4,10 @@ const path = require('path');
 const fs = require('fs');
 
 // Flatpak command for Ungoogled Chromium
-const chromiumCommand = ['flatpak', 'run', 'com.github.Eloston.UngoogledChromium'];
+const defaultChromiumCommand = ['flatpak', 'run', 'com.github.Eloston.UngoogledChromium'];
+const chromiumCommand = process.env.CHROMIUM_CMD
+  ? process.env.CHROMIUM_CMD.split(/\s+/)
+  : defaultChromiumCommand;
 
 // No-sleep blocker
 let psbId = null;

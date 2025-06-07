@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 
 # Stream Deck Launcher Script - Final Version
 # Launches Electron app using Ungoogled Chromium Flatpak

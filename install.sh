@@ -5,6 +5,12 @@ set -euo pipefail
 echo "Stream Deck Launcher Installer (Steam Deck Safe Version)"
 echo "--------------------------------------------"
 
+# Ensure read-only FS is re-enabled on exit if steamos-readonly exists
+if command -v steamos-readonly >/dev/null 2>&1; then
+  sudo steamos-readonly disable
+  trap 'sudo steamos-readonly enable' EXIT
+fi
+
 # Ensure required commands are available
 command -v flatpak >/dev/null 2>&1 || {
   echo "flatpak is required but not installed. Aborting." >&2
@@ -19,9 +25,9 @@ command -v git >/dev/null 2>&1 || {
 echo "Checking Flathub..."
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
-# Install Node.js via Flatpak
+# Install Node.js extension via Flatpak
 echo "Installing Node.js (via Flatpak)..."
-flatpak install -y flathub io.nodejs.NodeJS
+flatpak install -y flathub org.freedesktop.Sdk.Extension.node20
 
 # Install Ungoogled Chromium via Flatpak
 echo "Installing Ungoogled Chromium (via Flatpak)..."
@@ -38,7 +44,7 @@ cd Stream-Deck
 
 # Install dependencies via Flatpak Node.js
 echo "Running npm install (via Flatpak Node.js)..."
-flatpak run io.nodejs.NodeJS npm install
+flatpak run --command=npm org.freedesktop.Sdk.Extension.node20 npm install
 
 # Launch Stream Deck
 echo "Launching Stream Deck Launcher..."

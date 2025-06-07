@@ -1,93 +1,29 @@
-#!/usr/bin/env bash
-set -e
+#!/bin/bash
 
-echo "Stream Deck Launcher Installer"
+echo "Stream Deck Launcher Installer (Steam Deck Safe Version)"
+echo "--------------------------------------------"
 
-# Detect if running on Steam Deck (SteamOS)
-IS_DECK=false
-if grep -qi "SteamOS" /etc/os-release 2>/dev/null; then
-    IS_DECK=true
-fi
+# Add Flathub if not already present
+echo "Checking Flathub..."
+flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
-# Disable read-only filesystem on SteamOS if possible
-if command -v steamos-readonly >/dev/null 2>&1; then
-    echo "Disabling SteamOS read-only mode..."
-    sudo steamos-readonly disable || true
-fi
+# Install Node.js via Flatpak
+echo "Installing Node.js (via Flatpak)..."
+flatpak install -y flathub io.nodejs.NodeJS
 
-# Ensure Flatpak is available
-if ! command -v flatpak >/dev/null 2>&1; then
-    echo "Flatpak is required but not found. Please install Flatpak and re-run this script." >&2
-    exit 1
-fi
+# Clone repo
+echo "Cloning Stream Deck Launcher repo..."
+git clone https://github.com/n47h4ni3l/Stream-Deck.git
+cd Stream-Deck
 
-# Install Node via Flatpak if needed
-if ! command -v node >/dev/null 2>&1 || ! command -v npm >/dev/null 2>&1; then
-    echo "Installing Node.js via Flatpak..."
-    if ! flatpak remotes --user | grep -q '^flathub\\>' ; then
-        flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-    fi
-    flatpak install -y --user flathub org.nodejs.Node
-    NPM_CMD="flatpak run --command=npm org.nodejs.Node"
-else
-    NPM_CMD="npm"
-fi
+# Install dependencies via Flatpak Node.js
+echo "Running npm install (via Flatpak Node.js)..."
+flatpak run io.nodejs.NodeJS npm install
 
-# Download Chromium AppImage
-mkdir -p chromium
-CHROMIUM_PATH="chromium/Chromium-x86-64.AppImage"
-if [ ! -f "$CHROMIUM_PATH" ]; then
-    CHROMIUM_URL="https://github.com/ungoogled-software/ungoogled-chromium/releases/latest/download/ungoogled-chromium.AppImage"
-    echo "Downloading Chromium AppImage..."
-    if command -v curl >/dev/null 2>&1; then
-        curl -L "$CHROMIUM_URL" -o "$CHROMIUM_PATH"
-    elif command -v wget >/dev/null 2>&1; then
-        wget "$CHROMIUM_URL" -O "$CHROMIUM_PATH"
-    else
-        echo "Please install curl or wget to download Chromium." >&2
-        exit 1
-    fi
+# Make Chromium AppImage executable
+echo "Making Chromium executable..."
+chmod +x chromium/Chromium-x86-64.AppImage
 
-    # Attempt to download SHA256 checksum if available
-    CHECKSUM_AVAILABLE=false
-    if command -v curl >/dev/null 2>&1; then
-        if curl -fLs "${CHROMIUM_URL}.sha256" -o "${CHROMIUM_PATH}.sha256"; then
-            CHECKSUM_AVAILABLE=true
-        elif curl -fLs "${CHROMIUM_URL}.sha256sum" -o "${CHROMIUM_PATH}.sha256"; then
-            CHECKSUM_AVAILABLE=true
-        fi
-    elif command -v wget >/dev/null 2>&1; then
-        if wget -q "${CHROMIUM_URL}.sha256" -O "${CHROMIUM_PATH}.sha256"; then
-            CHECKSUM_AVAILABLE=true
-        elif wget -q "${CHROMIUM_URL}.sha256sum" -O "${CHROMIUM_PATH}.sha256"; then
-            CHECKSUM_AVAILABLE=true
-        fi
-    fi
-
-    if [ "$CHECKSUM_AVAILABLE" = true ]; then
-        SHA_VAL=$(grep -oE '^[0-9a-fA-F]{64}' "${CHROMIUM_PATH}.sha256" | head -n1)
-        if [ -n "$SHA_VAL" ]; then
-            echo "$SHA_VAL  $(basename "$CHROMIUM_PATH")" > "${CHROMIUM_PATH}.sha256"
-            echo "Verifying AppImage checksum..."
-            if ! (cd chromium && sha256sum -c "$(basename "${CHROMIUM_PATH}.sha256")"); then
-                echo "Checksum verification failed!" >&2
-                exit 1
-            fi
-        else
-            echo "Could not parse checksum; skipping verification." >&2
-        fi
-    else
-        echo "Checksum file not available; skipping verification." >&2
-    fi
-else
-    echo "Chromium AppImage already exists."
-fi
-
-# Install Node.js dependencies
-$NPM_CMD install
-
-# Make AppImages executable
-find chromium -name '*.AppImage' -exec chmod +x {} \;
-
-echo -e "\nInstallation complete!"
-echo "Run ./StreamDeckLauncher.sh to start Stream Deck Launcher."
+# Launch Stream Deck
+echo "Launching Stream Deck Launcher..."
+./StreamDeckLauncher.sh

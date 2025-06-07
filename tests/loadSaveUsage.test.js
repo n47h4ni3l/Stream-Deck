@@ -1,5 +1,4 @@
 const fs = require('fs');
-const path = require('path');
 
 jest.mock('electron', () => {
   const fs = require('fs');

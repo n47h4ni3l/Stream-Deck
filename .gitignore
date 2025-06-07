@@ -1,0 +1,31 @@
+# Node modules
+node_modules/
+
+# Logs
+npm-debug.log*
+logs
+*.log
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime data
+pids
+*.pid
+*.pid.lock
+
+# Coverage directory
+coverage/
+
+# Production build directory
+build/
+dist/
+
+# OS files
+.DS_Store
+
+# Environment files
+.env
+
+# Editor directories and files
+.idea/
+.vscode/

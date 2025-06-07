@@ -41,7 +41,8 @@ dependencies and then launches the Stream Deck Launcher.
 ## Installation & Running
 **QUICK INSTALL (Steam Deck & Linux)**
 
-1. Clone Stream Deck Launcher:
+1. Clone Stream Deck Launcher (optional, the installer clones automatically if
+   run outside the repo):
 
 ```bash
 git clone https://github.com/n47h4ni3l/Stream-Deck.git
@@ -53,9 +54,10 @@ cd Stream-Deck
 ```bash
 ./install.sh
 ```
-If the script reports **"No supported package manager found"**,
-install `git`, `nodejs` and `npm` manually using your package manager
-and then run `./install.sh` again.
+The script detects if it's already running from within the repository and skips
+cloning automatically. If it reports **"No supported package manager found"**, 
+install `git`, `nodejs` and `npm` manually using your package manager and then
+run `./install.sh` again.
 
 3. Launch Stream Deck:
 

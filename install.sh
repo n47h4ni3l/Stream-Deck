@@ -24,6 +24,17 @@ command -v curl >/dev/null 2>&1 || {
   exit 1
 }
 
+# Detect if we're already inside the repo
+in_repo=0
+if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+  repo_root="$(git rev-parse --show-toplevel)"
+  if [ -f "$repo_root/package.json" ]; then
+    echo "Detected existing Stream Deck repository at $repo_root"
+    cd "$repo_root"
+    in_repo=1
+  fi
+fi
+
 # Add Flathub if not already present
 echo "Checking Flathub..."
 flatpak remote-add --system --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
@@ -57,14 +68,18 @@ fi
 echo "Installing Ungoogled Chromium (via Flatpak)..."
 flatpak install -y --system flathub com.github.Eloston.UngoogledChromium
 
-# Clone repo
-echo "Cloning Stream Deck Launcher repo..."
-if [ -d Stream-Deck ]; then
-  echo "Directory 'Stream-Deck' already exists, skipping clone."
+# Clone repo if needed
+if [ "$in_repo" -eq 0 ]; then
+  echo "Cloning Stream Deck Launcher repo..."
+  if [ -d Stream-Deck ]; then
+    echo "Directory 'Stream-Deck' already exists, skipping clone."
+  else
+    git clone https://github.com/n47h4ni3l/Stream-Deck.git
+  fi
+  cd Stream-Deck
 else
-  git clone https://github.com/n47h4ni3l/Stream-Deck.git
+  echo "Using existing repository, skipping clone."
 fi
-cd Stream-Deck
 
 # Install dependencies using the Volta-managed npm
 echo "Running npm install..."

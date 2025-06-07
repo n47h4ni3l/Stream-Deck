@@ -87,6 +87,7 @@ flatpak install -y --user flathub com.github.Eloston.UngoogledChromium
 echo "Running npm install..."
 npm install
 
-# Launch Stream Deck
+# Launch the app
 echo "Launching Stream Deck Launcher..."
-./StreamDeckLauncher.sh
+npm start
+

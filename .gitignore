@@ -29,3 +29,6 @@ dist/
 # Editor directories and files
 .idea/
 .vscode/
+
+# File storing command usage history
+usage.json

@@ -43,19 +43,23 @@ cd Stream-Deck
 npm install
 ```
 
-4. Make Chromium executable:
+4. Download Chromium AppImage (not included):
+
+Download `Chromium-x86-64.AppImage` and place it at `chromium/Chromium-x86-64.AppImage`. You can obtain builds from [ungoogled-chromium portable releases](https://github.com/NeverDecaf/ungoogled-chromium-portable/releases) or another trusted source.
+
+5. Make Chromium executable:
 
 ```
 chmod +x chromium/Chromium-x86-64.AppImage
 ```
 
-5. Launch Stream Deck:
+6. Launch Stream Deck:
 
 ```
 ./StreamDeckLauncher.sh
 ```
 
-6. Add to Steam:
+7. Add to Steam:
 
 * In Desktop Mode → open Steam
 * Add `StreamDeckLauncher.sh` as a Non-Steam Game

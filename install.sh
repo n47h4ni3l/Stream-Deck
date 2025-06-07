@@ -79,6 +79,38 @@ if [ ! -f "$CHROMIUM_PATH" ]; then
         echo "Please install curl or wget to download Chromium." >&2
         exit 1
     fi
+
+    # Attempt to download SHA256 checksum if available
+    CHECKSUM_AVAILABLE=false
+    if command -v curl >/dev/null 2>&1; then
+        if curl -fLs "${CHROMIUM_URL}.sha256" -o "${CHROMIUM_PATH}.sha256"; then
+            CHECKSUM_AVAILABLE=true
+        elif curl -fLs "${CHROMIUM_URL}.sha256sum" -o "${CHROMIUM_PATH}.sha256"; then
+            CHECKSUM_AVAILABLE=true
+        fi
+    elif command -v wget >/dev/null 2>&1; then
+        if wget -q "${CHROMIUM_URL}.sha256" -O "${CHROMIUM_PATH}.sha256"; then
+            CHECKSUM_AVAILABLE=true
+        elif wget -q "${CHROMIUM_URL}.sha256sum" -O "${CHROMIUM_PATH}.sha256"; then
+            CHECKSUM_AVAILABLE=true
+        fi
+    fi
+
+    if [ "$CHECKSUM_AVAILABLE" = true ]; then
+        SHA_VAL=$(grep -oE '^[0-9a-fA-F]{64}' "${CHROMIUM_PATH}.sha256" | head -n1)
+        if [ -n "$SHA_VAL" ]; then
+            echo "$SHA_VAL  $(basename "$CHROMIUM_PATH")" > "${CHROMIUM_PATH}.sha256"
+            echo "Verifying AppImage checksum..."
+            if ! (cd chromium && sha256sum -c "$(basename "${CHROMIUM_PATH}.sha256")"); then
+                echo "Checksum verification failed!" >&2
+                exit 1
+            fi
+        else
+            echo "Could not parse checksum; skipping verification." >&2
+        fi
+    else
+        echo "Checksum file not available; skipping verification." >&2
+    fi
 else
     echo "Chromium AppImage already exists."
 fi

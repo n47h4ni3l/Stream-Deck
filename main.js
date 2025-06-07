@@ -1,6 +1,10 @@
-const { app, BrowserWindow, ipcMain, shell, powerSaveBlocker } = require('electron');
+const { app, BrowserWindow, ipcMain, powerSaveBlocker } = require('electron');
+const { spawn } = require('child_process');
 const path = require('path');
 const fs = require('fs');
+
+// Path to bundled Chromium AppImage
+const chromiumPath = path.join(__dirname, 'chromium/Chromium-x86-64.AppImage');
 
 // No-sleep blocker
 let psbId = null;
@@ -92,8 +96,9 @@ ipcMain.on('launch-service', (event, serviceName) => {
     usageData[serviceName] = (usageData[serviceName] || 0) + 1;
     saveUsage();
 
-    // Open in external browser (Chromium will remember login)
-    shell.openExternal(url);
+    // Launch bundled Chromium with the service URL
+    const child = spawn(chromiumPath, [url], { detached: true, stdio: 'ignore' });
+    child.unref();
   }
 });
 

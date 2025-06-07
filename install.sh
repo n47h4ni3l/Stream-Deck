@@ -26,7 +26,7 @@ command -v curl >/dev/null 2>&1 || {
 
 # Add Flathub if not already present
 echo "Checking Flathub..."
-flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+flatpak remote-add --system --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
 # Install Volta if needed and ensure it's on PATH
 if [ ! -d "$HOME/.volta" ]; then
@@ -55,7 +55,7 @@ fi
 
 # Install Ungoogled Chromium via Flatpak
 echo "Installing Ungoogled Chromium (via Flatpak)..."
-flatpak install -y flathub com.github.Eloston.UngoogledChromium
+flatpak install -y --system flathub com.github.Eloston.UngoogledChromium
 
 # Clone repo
 echo "Cloning Stream Deck Launcher repo..."

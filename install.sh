@@ -9,6 +9,13 @@ echo "--------------------------------------------"
 # remains compatible with immutable SteamOS.
 
 # No root privileges required. This script does not modify system files.
+# clone Stream-Deck repo
+if [ ! -d "Stream-Deck" ]; then
+  echo "Cloning Stream-Deck repo..."
+  git clone https://github.com/n47h4ni3l/Stream-Deck.git
+fi
+
+cd Stream-Deck
 
 # Ensure required commands are available
 command -v flatpak >/dev/null 2>&1 || {

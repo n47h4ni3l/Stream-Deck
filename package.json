@@ -4,11 +4,17 @@
   "description": "Stream Deck Launcher for Steam Deck - Unified Streaming Dashboard",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "test": "jest",
+    "lint": "ESLINT_USE_FLAT_CONFIG=false eslint -c .eslintrc.json ."
   },
   "author": "N47H4NI3L <74298967+n47h4ni3l@users.noreply.github.com>",
   "license": "MIT",
   "dependencies": {
     "electron": "^25.3.1"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "eslint": "^8.56.0"
   }
 }

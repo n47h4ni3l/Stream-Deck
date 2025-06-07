@@ -48,9 +48,9 @@ function saveUsage() {
 }
 
 // Sort services by usage
-function getSortedServices() {
+function getSortedServices(data = usageData) {
   return Object.keys(services).sort((a, b) => {
-    return (usageData[b] || 0) - (usageData[a] || 0);
+    return (data[b] || 0) - (data[a] || 0);
   });
 }
 
@@ -71,38 +71,42 @@ function createWindow() {
   psbId = powerSaveBlocker.start('prevent-display-sleep');
 }
 
-// App lifecycle
-app.whenReady().then(() => {
-  loadUsage();
-  createWindow();
+if (require.main === module) {
+  // App lifecycle
+  app.whenReady().then(() => {
+    loadUsage();
+    createWindow();
 
-  app.on('activate', function () {
-    if (BrowserWindow.getAllWindows().length === 0) createWindow();
+    app.on('activate', function () {
+      if (BrowserWindow.getAllWindows().length === 0) createWindow();
+    });
   });
-});
 
-app.on('window-all-closed', function () {
-  if (powerSaveBlocker.isStarted(psbId)) {
-    powerSaveBlocker.stop(psbId);
-  }
-  if (process.platform !== 'darwin') app.quit();
-});
+  app.on('window-all-closed', function () {
+    if (powerSaveBlocker.isStarted(psbId)) {
+      powerSaveBlocker.stop(psbId);
+    }
+    if (process.platform !== 'darwin') app.quit();
+  });
 
-// IPC: Launch service
-ipcMain.on('launch-service', (event, serviceName) => {
-  const url = services[serviceName];
-  if (url) {
-    // Update usage
-    usageData[serviceName] = (usageData[serviceName] || 0) + 1;
-    saveUsage();
+  // IPC: Launch service
+  ipcMain.on('launch-service', (event, serviceName) => {
+    const url = services[serviceName];
+    if (url) {
+      // Update usage
+      usageData[serviceName] = (usageData[serviceName] || 0) + 1;
+      saveUsage();
 
-    // Launch bundled Chromium with the service URL
-    const child = spawn(chromiumPath, [url], { detached: true, stdio: 'ignore' });
-    child.unref();
-  }
-});
+      // Launch bundled Chromium with the service URL
+      const child = spawn(chromiumPath, [url], { detached: true, stdio: 'ignore' });
+      child.unref();
+    }
+  });
 
-// IPC: Get sorted services
-ipcMain.handle('get-sorted-services', async () => {
-  return getSortedServices();
-});
+  // IPC: Get sorted services
+  ipcMain.handle('get-sorted-services', async () => {
+    return getSortedServices();
+  });
+}
+
+module.exports = { getSortedServices, services };

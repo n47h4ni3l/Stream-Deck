@@ -9,13 +9,25 @@ echo "--------------------------------------------"
 # remains compatible with immutable SteamOS.
 
 # No root privileges required. This script does not modify system files.
-# clone Stream-Deck repo
-if [ ! -d "Stream-Deck" ]; then
-  echo "Cloning Stream-Deck repo..."
-  git clone https://github.com/n47h4ni3l/Stream-Deck.git
+# Determine if we're already inside the repository
+in_repo=0
+if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+  repo_root="$(git rev-parse --show-toplevel)"
+  if [ -f "$repo_root/package.json" ]; then
+    echo "Detected existing Stream Deck repository at $repo_root"
+    cd "$repo_root"
+    in_repo=1
+  fi
 fi
 
-cd Stream-Deck
+# Clone repo when running outside it
+if [ "$in_repo" -eq 0 ]; then
+  if [ ! -d "Stream-Deck" ]; then
+    echo "Cloning Stream-Deck repo..."
+    git clone https://github.com/n47h4ni3l/Stream-Deck.git
+  fi
+  cd Stream-Deck
+fi
 
 # Ensure required commands are available
 command -v flatpak >/dev/null 2>&1 || {
@@ -30,17 +42,6 @@ command -v curl >/dev/null 2>&1 || {
   echo "curl is required but not installed. Aborting." >&2
   exit 1
 }
-
-# Detect if we're already inside the repo
-in_repo=0
-if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
-  repo_root="$(git rev-parse --show-toplevel)"
-  if [ -f "$repo_root/package.json" ]; then
-    echo "Detected existing Stream Deck repository at $repo_root"
-    cd "$repo_root"
-    in_repo=1
-  fi
-fi
 
 # Add Flathub if not already present
 echo "Checking Flathub..."
@@ -80,20 +81,7 @@ fi
 
 # Install Ungoogled Chromium via Flatpak
 echo "Installing Ungoogled Chromium (via Flatpak)..."
-flatpak install -y --user flathub io.github.ungoogled_software.ungoogled_chromium
-
-# Clone repo if needed
-if [ "$in_repo" -eq 0 ]; then
-  echo "Cloning Stream Deck Launcher repo..."
-  if [ -d Stream-Deck ]; then
-    echo "Directory 'Stream-Deck' already exists, skipping clone."
-  else
-    git clone https://github.com/n47h4ni3l/Stream-Deck.git
-  fi
-  cd Stream-Deck
-else
-  echo "Using existing repository, skipping clone."
-fi
+flatpak install -y --user flathub com.github.Eloston.UngoogledChromium
 
 # Install dependencies using the Volta-managed npm
 echo "Running npm install..."

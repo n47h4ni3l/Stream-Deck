@@ -3,6 +3,16 @@
 Unified streaming dashboard for **Steam Deck** (and any Linux desktop).  
 Built with Electron — controller-friendly UI, persistent login, usage tracking, no-sleep.
 
+## Quick Install
+
+Run the installer script directly from GitHub:
+
+```bash
+wget https://raw.githubusercontent.com/n47h4ni3l/Stream-Deck/main/install.sh
+chmod +x install.sh
+./install.sh
+```
+
 ---
 
 ## Features

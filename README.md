@@ -5,14 +5,17 @@ Built with Electron — controller-friendly UI, persistent login, usage tracking
 
 ## Quick Install
 
-Install in one step using `curl`:
+Download and verify the installer script:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/n47h4ni3l/Stream-Deck/main/install.sh | bash
+curl -fsSL -o /tmp/stream-deck-install.sh \
+  https://raw.githubusercontent.com/n47h4ni3l/Stream-Deck/main/install.sh
+echo "5d2e4465cccfe651c4689c19f15082867f0af35214ff8883b18bcf3498ed0e5f  /tmp/stream-deck-install.sh" | sha256sum -c -
+bash /tmp/stream-deck-install.sh
 ```
 
-This command pipes the script directly to bash, which installs all required
-dependencies and then launches the Stream Deck Launcher.
+The checksum check ensures the script has not been tampered with before it
+installs dependencies and launches the Stream Deck Launcher.
 
 ---
 

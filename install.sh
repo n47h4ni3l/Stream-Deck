@@ -49,7 +49,14 @@ flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flath
 # Install Volta if needed and ensure it's on PATH
 if [ ! -d "$HOME/.volta" ]; then
   echo "Installing Volta..."
-  curl https://get.volta.sh | bash
+  tmp_volta_installer="$(mktemp)"
+  # Download installer instead of piping directly to bash so we can verify it
+  curl -fsSL https://get.volta.sh -o "$tmp_volta_installer"
+  # Verify installer integrity via SHA256 to ensure it hasn't been tampered with.
+  # Maintainers: update the expected hash if the upstream installer changes.
+  echo "fbdc4b8cb33fb6d19e5f07b22423265943d34e7e5c3d5a1efcecc9621854f9cb  $tmp_volta_installer" | sha256sum -c -
+  bash "$tmp_volta_installer"
+  rm -f "$tmp_volta_installer"
 else
   echo "Volta already installed."
 fi

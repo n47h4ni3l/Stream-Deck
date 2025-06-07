@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Stream Deck Launcher
+Comment=Unified streaming launcher for Steam Deck
+Exec=/home/deck/Stream-Deck/StreamDeckLauncher.sh
+Path=/home/deck/Stream-Deck
+Icon=/home/deck/Stream-Deck/service_icons/netflix.png
+Terminal=false
+Categories=Utility;
+StartupNotify=false

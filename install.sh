@@ -64,8 +64,8 @@ export PATH="$VOLTA_HOME/bin:$PATH"
 
 # Install Node.js and npm with Volta if not already installed
 if ! volta which node >/dev/null 2>&1; then
-  echo "Installing Node.js with Volta..."
-  volta install node
+  echo "Installing Node.js 18 with Volta..."
+  volta install node@18
 else
   echo "Node.js already installed via Volta."
 fi

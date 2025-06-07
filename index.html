@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Stream Deck Launcher</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: white;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        .tile {
+            margin: 10px;
+            width: 150px;
+            height: 150px;
+            background-color: #1f1f1f;
+            border-radius: 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.2s;
+        }
+        .tile:hover {
+            transform: scale(1.1);
+            background-color: #2a2a2a;
+        }
+        .tile img {
+            max-width: 80%;
+            max-height: 80%;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        const { ipcRenderer } = require('electron');
+
+        async function loadTiles() {
+            const services = await ipcRenderer.invoke('get-sorted-services');
+            for (const service of services) {
+                const tile = document.createElement('div');
+                tile.className = 'tile';
+                tile.onclick = () => ipcRenderer.send('launch-service', service);
+
+                const img = document.createElement('img');
+                img.src = `icons/${service.toLowerCase().replace(/[^a-z0-9]/g, '')}.png`;
+
+                tile.appendChild(img);
+                document.body.appendChild(tile);
+            }
+        }
+
+        loadTiles();
+    </script>
+</body>
+</html>

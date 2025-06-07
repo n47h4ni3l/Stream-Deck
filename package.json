@@ -1,0 +1,14 @@
+{
+  "name": "streamdeck-launcher",
+  "version": "1.0.0",
+  "description": "Stream Deck Launcher for Steam Deck - Unified Streaming Dashboard",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "YourNameHere",
+  "license": "MIT",
+  "dependencies": {
+    "electron": "^25.3.1"
+  }
+}

@@ -95,3 +95,13 @@ npm run lint
 ---
 
 Service logos remain the property of their respective owners. This project has no affiliation with or endorsement from any streaming service.
+
+---
+
+## Community
+
+We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for development guidelines and how to submit pull requests.
+
+Our [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) explains the standards we expect from everyone in the project community.
+
+For information on reporting vulnerabilities, refer to [SECURITY.md](SECURITY.md).

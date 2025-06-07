@@ -48,7 +48,7 @@ git clone https://github.com/n47h4ni3l/Stream-Deck.git
 cd Stream-Deck
 ```
 
-2. Run the installer script to install all requirements, including Node.js and **Ungoogled Chromium** via **Flatpak**. The script automatically handles the Steam Deck read-only filesystem:
+2. Run the installer script to install all requirements, including Node.js and **Ungoogled Chromium** via **Flatpak**. The script automatically handles the Steam Deck read-only filesystem and installs Flatpak packages in user mode, so it won't ask for a root password:
 
 ```bash
 ./install.sh

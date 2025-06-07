@@ -47,7 +47,7 @@ git clone https://github.com/n47h4ni3l/Stream-Deck.git
 cd Stream-Deck
 ```
 
-2. Run the installer script to set up requirements and download Chromium:
+2. Run the installer script to set up requirements and download Chromium. If `pacman` fails to sync (common on SteamOS due to a read-only filesystem), the script now attempts to disable the read-only mode and retry automatically:
 
 ```bash
 ./install.sh
@@ -62,6 +62,20 @@ cd Stream-Deck
 4. (Optional) add `StreamDeckLauncher.sh` to Steam to use in Gaming Mode.
 
 Installation complete! Launch from your Steam library and sign in to your favorite streaming services.
+
+---
+
+## Development
+
+Install Node.js dependencies and run the test and lint tasks:
+
+```bash
+npm install
+npm test
+npm run lint
+```
+
+`npm install` installs Jest and ESLint from `devDependencies`.
 
 ---
 

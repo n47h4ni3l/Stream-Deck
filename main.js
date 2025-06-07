@@ -60,6 +60,18 @@ function saveUsage() {
   fs.writeFileSync(usageFile, JSON.stringify(usageData));
 }
 
+// Launch a service URL in Chromium and track usage
+function launchService(serviceName) {
+  const url = services[serviceName];
+  if (url) {
+    usageData[serviceName] = (usageData[serviceName] || 0) + 1;
+    saveUsage();
+
+    const child = spawn(chromiumPath, [url], { detached: true, stdio: 'ignore' });
+    child.unref();
+  }
+}
+
 // Sort services by usage
 function getSortedServices(data = usageData) {
   return Object.keys(services).sort((a, b) => {
@@ -104,16 +116,7 @@ if (require.main === module) {
 
   // IPC: Launch service
   ipcMain.on('launch-service', (event, serviceName) => {
-    const url = services[serviceName];
-    if (url) {
-      // Update usage
-      usageData[serviceName] = (usageData[serviceName] || 0) + 1;
-      saveUsage();
-
-      // Launch bundled Chromium with the service URL
-      const child = spawn(chromiumPath, [url], { detached: true, stdio: 'ignore' });
-      child.unref();
-    }
+    launchService(serviceName);
   });
 
   // IPC: Get sorted services
@@ -122,4 +125,13 @@ if (require.main === module) {
   });
 }
 
-module.exports = { getSortedServices, services };
+module.exports = {
+  getSortedServices,
+  services,
+  loadUsage,
+  saveUsage,
+  usageFile,
+  usageData,
+  launchService,
+  chromiumPath
+};

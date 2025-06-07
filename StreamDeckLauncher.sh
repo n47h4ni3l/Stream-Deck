@@ -1,8 +1,12 @@
-#!/bin/bash
+#!/usr/bin/env bash
 set -euo pipefail
 
 # Stream Deck Launcher Script - Final Version
 # Launches Electron app using Ungoogled Chromium Flatpak
+
+# Ensure Volta-managed Node.js is on PATH
+export VOLTA_HOME="$HOME/.volta"
+export PATH="$VOLTA_HOME/bin:$PATH"
 
 # Set working directory to script location
 cd "$(dirname "$0")"
@@ -18,5 +22,11 @@ else
     exit 1
 fi
 
-# Run Electron app (fullscreen / Deck-friendly)
-"$NPX_CMD" electron . --enable-features=OverlayScrollbar --kiosk
+# Detect Wayland or X11
+if [ "${XDG_SESSION_TYPE:-}" = "wayland" ]; then
+  echo "Detected Wayland session. Launching with Wayland flags..."
+  "$NPX_CMD" electron . --enable-features=UseOzonePlatform --ozone-platform=wayland
+else
+  echo "Detected X11 session. Launching without Wayland flags..."
+  "$NPX_CMD" electron .
+fi

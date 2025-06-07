@@ -74,4 +74,17 @@ describe('launchService', () => {
 
     delete process.env.CHROMIUM_CMD;
   });
+
+  test('uses default chromium command when CHROMIUM_CMD is unset', () => {
+    jest.resetModules();
+    delete process.env.CHROMIUM_CMD;
+
+    const { chromiumCommand } = require('../main');
+
+    expect(chromiumCommand).toEqual([
+      'flatpak',
+      'run',
+      'io.github.ungoogled_software.ungoogled_chromium'
+    ]);
+  });
 });

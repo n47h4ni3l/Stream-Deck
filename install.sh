@@ -9,6 +9,12 @@ if grep -qi "SteamOS" /etc/os-release 2>/dev/null; then
     IS_DECK=true
 fi
 
+# Disable read-only filesystem on SteamOS if possible
+if command -v steamos-readonly >/dev/null 2>&1; then
+    echo "Disabling SteamOS read-only mode..."
+    sudo steamos-readonly disable || true
+fi
+
 # Detect package manager
 if [ "$IS_DECK" = true ]; then
     PM="flatpak"

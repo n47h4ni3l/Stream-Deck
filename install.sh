@@ -66,7 +66,7 @@ fi
 
 # Install Ungoogled Chromium via Flatpak
 echo "Installing Ungoogled Chromium (via Flatpak)..."
-flatpak install -y --user flathub com.github.Eloston.UngoogledChromium
+flatpak install -y --user flathub io.github.ungoogled_software.ungoogled_chromium
 
 # Clone repo if needed
 if [ "$in_repo" -eq 0 ]; then

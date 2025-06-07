@@ -64,8 +64,8 @@ export PATH="$VOLTA_HOME/bin:$PATH"
 
 # Install Node.js and npm with Volta if not already installed
 if ! volta which node >/dev/null 2>&1; then
-  echo "Installing Node.js 18 with Volta..."
-  volta install node@18
+  echo "Installing Node.js with Volta..."
+  volta install node
 else
   echo "Node.js already installed via Volta."
 fi
@@ -88,6 +88,30 @@ npm install
 # Ensure launcher script is executable
 echo "Setting launcher permissions..."
 chmod +x StreamDeckLauncher.sh
+
+# Install .desktop shortcut
+echo "Installing desktop shortcut..."
+
+desktop_file_target="$HOME/.local/share/applications/StreamDeckLauncher.desktop"
+
+cat > "$desktop_file_target" <<EOF
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Stream Deck Launcher
+Comment=Unified streaming launcher for Steam Deck
+Exec=$HOME/Stream-Deck/StreamDeckLauncher.sh
+Path=$HOME/Stream-Deck
+Icon=$HOME/Stream-Deck/service_icons/netflix.png
+Terminal=false
+Categories=Utility;
+StartupNotify=false
+EOF
+
+chmod +x "$desktop_file_target"
+
+echo "Desktop shortcut installed at: $desktop_file_target"
+echo
 
 # Launch the app
 echo "Launching Stream Deck Launcher..."

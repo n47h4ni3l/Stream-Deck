@@ -28,15 +28,6 @@ dependencies and then launches the Stream Deck Launcher.
 
 ---
 
-## Download & Run Prebuilt Release
-
-1. Go to the [releases page](https://github.com/n47h4ni3l/Stream-Deck/releases) and download the archive for your OS.
-2. Extract the archive and run the included launcher:
-   - **Windows**: run `Stream Deck Launcher.exe`
-   - **macOS**: open `Stream Deck Launcher.app`
-   - **Linux**: run `./StreamDeckLauncher` (make it executable if needed)
-
----
 
 ## Installation & Running
 **QUICK INSTALL (Steam Deck & Linux)**

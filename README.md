@@ -65,4 +65,18 @@ Installation complete! Launch from your Steam library and sign in to your favori
 
 ---
 
+## Development
+
+Install Node.js dependencies and run the test and lint tasks:
+
+```bash
+npm install
+npm test
+npm run lint
+```
+
+`npm install` installs Jest and ESLint from `devDependencies`.
+
+---
+
 Service logos remain the property of their respective owners. This project has no affiliation with or endorsement from any streaming service.

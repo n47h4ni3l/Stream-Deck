@@ -52,6 +52,9 @@ cd Stream-Deck
 ```bash
 ./install.sh
 ```
+If the script reports **"No supported package manager found"**,
+install `git`, `nodejs` and `npm` manually using your package manager
+and then run `./install.sh` again.
 
 3. Launch Stream Deck:
 

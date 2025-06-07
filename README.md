@@ -47,6 +47,8 @@ git clone https://github.com/n47h4ni3l/Stream-Deck.git
 cd Stream-Deck
 ```
 
+SteamOS derivatives like **Bazzite** and **HoloISO** are detected automatically.
+
 2. Run the installer script to set up requirements and download Chromium. If `pacman` fails to sync (common on SteamOS due to a read-only filesystem), the script now attempts to disable the read-only mode and retry automatically:
 
 ```bash

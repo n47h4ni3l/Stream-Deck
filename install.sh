@@ -3,9 +3,9 @@ set -e
 
 echo "Stream Deck Launcher Installer"
 
-# Detect if running on Steam Deck (SteamOS)
+# Detect if running on Steam Deck (SteamOS or derivatives)
 IS_DECK=false
-if grep -qi "SteamOS" /etc/os-release 2>/dev/null; then
+if grep -qiE 'SteamOS|steamos|bazzite|holoiso' /etc/os-release; then
     IS_DECK=true
 fi
 

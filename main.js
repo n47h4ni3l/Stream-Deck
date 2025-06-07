@@ -30,7 +30,10 @@ const services = {
 };
 
 // Usage tracking file
-const usageFile = path.join(app.getPath('userData'), 'usage.json');
+const userDataPath = app && typeof app.getPath === 'function'
+  ? app.getPath('userData')
+  : __dirname;
+const usageFile = path.join(userDataPath, 'usage.json');
 let usageData = {};
 
 // Load usage data

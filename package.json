@@ -6,7 +6,7 @@
   "scripts": {
     "start": "electron .",
     "test": "jest",
-    "lint": "ESLINT_USE_FLAT_CONFIG=false eslint -c .eslintrc.json .",
+    "lint": "eslint .",
     "build": "electron-builder -mwl"
   },
   "author": "N47H4NI3L <74298967+n47h4ni3l@users.noreply.github.com>",

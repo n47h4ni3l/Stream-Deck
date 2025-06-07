@@ -9,6 +9,7 @@ echo "--------------------------------------------"
 # remains compatible with immutable SteamOS.
 
 # No root privileges required. This script does not modify system files.
+
 # Determine if we're already inside the repository
 in_repo=0
 if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
@@ -51,10 +52,7 @@ flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flath
 if [ ! -d "$HOME/.volta" ]; then
   echo "Installing Volta..."
   tmp_volta_installer="$(mktemp)"
-  # Download installer instead of piping directly to bash so we can verify it
   curl -fsSL https://get.volta.sh -o "$tmp_volta_installer"
-  # Verify installer integrity via SHA256 to ensure it hasn't been tampered with.
-  # Maintainers: update the expected hash if the upstream installer changes.
   echo "fbdc4b8cb33fb6d19e5f07b22423265943d34e7e5c3d5a1efcecc9621854f9cb  $tmp_volta_installer" | sha256sum -c -
   bash "$tmp_volta_installer"
   rm -f "$tmp_volta_installer"
@@ -79,15 +77,18 @@ else
   echo "npm already installed via Volta."
 fi
 
-# Install Ungoogled Chromium via Flatpak
+# Install latest Ungoogled Chromium via Flatpak (new app ID)
 echo "Installing Ungoogled Chromium (via Flatpak)..."
-flatpak install -y --user flathub com.github.Eloston.UngoogledChromium
+flatpak install -y --user flathub io.github.ungoogled_software.ungoogled_chromium
 
 # Install dependencies using the Volta-managed npm
 echo "Running npm install..."
 npm install
 
+# Ensure launcher script is executable
+echo "Setting launcher permissions..."
+chmod +x StreamDeckLauncher.sh
+
 # Launch the app
 echo "Launching Stream Deck Launcher..."
-npm start
-
+./StreamDeckLauncher.sh

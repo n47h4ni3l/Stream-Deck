@@ -43,12 +43,13 @@ if [ ${#packages[@]} -gt 0 ]; then
     echo "Installing packages: ${packages[*]}"
     if [ "$PM" = "pacman" ]; then
         if ! sudo pacman -Sy --needed --noconfirm "${packages[@]}"; then
-            echo "pacman failed to synchronize. Attempting to disable read-only filesystem..." >&2
+            echo "pacman failed to synchronize packages." >&2
+            echo "Check your network connection and consider running 'steamos-readonly disable'." >&2
             if command -v steamos-readonly >/dev/null 2>&1; then
                 sudo steamos-readonly disable
             fi
-            sudo pacman -Sy
-            sudo pacman -Sy --needed --noconfirm "${packages[@]}"
+            sudo pacman -Sy || { echo "pacman sync failed." >&2; exit 1; }
+            sudo pacman -Sy --needed --noconfirm "${packages[@]}" || { echo "Failed to install packages with pacman." >&2; exit 1; }
         fi
     elif [ "$PM" = "apt" ]; then
         sudo apt-get update

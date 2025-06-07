@@ -43,4 +43,13 @@ describe('launchService', () => {
     const data = JSON.parse(fs.readFileSync(usageFile));
     expect(data['Hulu']).toBe(1);
   });
+
+  test('handles spawn errors without throwing', () => {
+    const error = new Error('fail');
+    spawn.mockImplementation(() => { throw error; });
+    const event = { sender: { send: jest.fn() } };
+
+    expect(() => launchService('Netflix', event)).not.toThrow();
+    expect(event.sender.send).toHaveBeenCalledWith('launch-service-error', 'Netflix');
+  });
 });

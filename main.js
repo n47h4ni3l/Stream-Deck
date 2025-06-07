@@ -61,14 +61,21 @@ function saveUsage() {
 }
 
 // Launch a service URL in Chromium and track usage
-function launchService(serviceName) {
+function launchService(serviceName, event) {
   const url = services[serviceName];
   if (url) {
     usageData[serviceName] = (usageData[serviceName] || 0) + 1;
     saveUsage();
 
-    const child = spawn(chromiumPath, [url], { detached: true, stdio: 'ignore' });
-    child.unref();
+    try {
+      const child = spawn(chromiumPath, [url], { detached: true, stdio: 'ignore' });
+      child.unref();
+    } catch (err) {
+      console.error('Failed to launch service:', err);
+      if (event && event.sender && typeof event.sender.send === 'function') {
+        event.sender.send('launch-service-error', serviceName);
+      }
+    }
   }
 }
 
@@ -118,7 +125,7 @@ if (require.main === module) {
 
   // IPC: Launch service
   ipcMain.on('launch-service', (event, serviceName) => {
-    launchService(serviceName);
+    launchService(serviceName, event);
   });
 
   // IPC: Get sorted services

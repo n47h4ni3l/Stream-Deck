@@ -8,10 +8,10 @@ Built with Electron — controller-friendly UI, persistent login, usage tracking
 Install in one step using `curl`:
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/n47h4ni3l/Stream-Deck/main/install.sh)
+curl -fsSL https://raw.githubusercontent.com/n47h4ni3l/Stream-Deck/main/install.sh | bash
 ```
 
-This command downloads the installer from GitHub, installs all required
+This command pipes the script directly to bash, which installs all required
 dependencies and then launches the Stream Deck Launcher.
 
 ---

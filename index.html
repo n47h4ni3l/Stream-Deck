@@ -50,6 +50,7 @@
 
                 const img = document.createElement('img');
                 img.src = `icons/${service.toLowerCase().replace(/[^a-z0-9]/g, '')}.png`;
+                img.alt = service;
 
                 tile.appendChild(img);
                 document.body.appendChild(tile);

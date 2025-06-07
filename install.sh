@@ -5,11 +5,10 @@ set -euo pipefail
 echo "Stream Deck Launcher Installer (Steam Deck Safe Version)"
 echo "--------------------------------------------"
 
-# Ensure read-only FS is re-enabled on exit if steamos-readonly exists
-if command -v steamos-readonly >/dev/null 2>&1; then
-  sudo steamos-readonly disable
-  trap 'sudo steamos-readonly enable' EXIT
-fi
+# The installer avoids any system modifications requiring root access so it
+# remains compatible with immutable SteamOS.
+
+# No root privileges required. This script does not modify system files.
 
 # Ensure required commands are available
 command -v flatpak >/dev/null 2>&1 || {
@@ -20,14 +19,39 @@ command -v git >/dev/null 2>&1 || {
   echo "git is required but not installed. Aborting." >&2
   exit 1
 }
+command -v curl >/dev/null 2>&1 || {
+  echo "curl is required but not installed. Aborting." >&2
+  exit 1
+}
 
 # Add Flathub if not already present
 echo "Checking Flathub..."
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
-# Install Node.js extension via Flatpak
-echo "Installing Node.js (via Flatpak)..."
-flatpak install -y flathub org.freedesktop.Sdk.Extension.node20
+# Install Volta if needed and ensure it's on PATH
+if [ ! -d "$HOME/.volta" ]; then
+  echo "Installing Volta..."
+  curl https://get.volta.sh | bash
+else
+  echo "Volta already installed."
+fi
+export VOLTA_HOME="$HOME/.volta"
+export PATH="$VOLTA_HOME/bin:$PATH"
+
+# Install Node.js and npm with Volta if not already installed
+if ! volta which node >/dev/null 2>&1; then
+  echo "Installing Node.js with Volta..."
+  volta install node
+else
+  echo "Node.js already installed via Volta."
+fi
+
+if ! volta which npm >/dev/null 2>&1; then
+  echo "Installing npm with Volta..."
+  volta install npm
+else
+  echo "npm already installed via Volta."
+fi
 
 # Install Ungoogled Chromium via Flatpak
 echo "Installing Ungoogled Chromium (via Flatpak)..."
@@ -42,9 +66,9 @@ else
 fi
 cd Stream-Deck
 
-# Install dependencies via Flatpak Node.js
-echo "Running npm install (via Flatpak Node.js)..."
-flatpak run --command=npm org.freedesktop.Sdk.Extension.node20 npm install
+# Install dependencies using the Volta-managed npm
+echo "Running npm install..."
+npm install
 
 # Launch Stream Deck
 echo "Launching Stream Deck Launcher..."

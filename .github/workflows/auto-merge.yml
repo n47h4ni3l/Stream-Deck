@@ -1,0 +1,29 @@
+name: Auto Merge to Main
+
+on:
+  push:
+    branches:
+      - '**'         # Trigger on all branches except main
+    # You can limit to specific branches if desired
+
+jobs:
+  merge:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Place any test steps here
+      # Example:
+      # - name: Run tests
+      #   run: npm test
+
+      - name: Merge to main
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git fetch origin main
+          git merge --no-ff --no-edit origin/${{ github.ref_name }}
+          git push origin HEAD:main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

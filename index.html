@@ -40,14 +40,12 @@
 </head>
 <body>
     <script>
-        const { ipcRenderer } = require('electron');
-
         async function loadTiles() {
-            const services = await ipcRenderer.invoke('get-sorted-services');
+            const services = await window.electronAPI.getSortedServices();
             for (const service of services) {
                 const tile = document.createElement('div');
                 tile.className = 'tile';
-                tile.onclick = () => ipcRenderer.send('launch-service', service);
+                tile.onclick = () => window.electronAPI.launchService(service);
 
                 const img = document.createElement('img');
                 img.src = `icons/${service.toLowerCase().replace(/[^a-z0-9]/g, '')}.png`;

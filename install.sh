@@ -94,9 +94,10 @@ echo "Installing desktop shortcut..."
 
 desktop_file_target="$HOME/.local/share/applications/StreamDeckLauncher.desktop"
 
-echo "Copying StreamDeckLauncher.desktop to $desktop_file_target..."
+echo "Creating desktop file at $desktop_file_target..."
 mkdir -p "$(dirname "$desktop_file_target")"
-cp StreamDeckLauncher.desktop "$desktop_file_target"
+# Expand $HOME to an absolute path for Exec, Path and Icon entries
+envsubst < StreamDeckLauncher.desktop > "$desktop_file_target"
 
 chmod +x "$desktop_file_target"
 

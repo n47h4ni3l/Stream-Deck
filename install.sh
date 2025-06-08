@@ -5,6 +5,7 @@ set -euo pipefail
 # Always operate from the directory containing this script so relative paths
 # work regardless of where the installer was launched from.
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+orig_dir="$(pwd)"
 cd "$script_dir"
 
 echo "Stream Deck Launcher Installer (Steam Deck Safe Version)"
@@ -17,7 +18,12 @@ echo "--------------------------------------------"
 
 # Determine if we're already inside the repository
 in_repo=0
-if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+# Prefer repository from the directory the user invoked the installer from
+if [ -f "$orig_dir/package.json" ]; then
+  echo "Detected existing Stream Deck repository at $orig_dir"
+  cd "$orig_dir"
+  in_repo=1
+elif git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
   repo_root="$(git rev-parse --show-toplevel)"
   if [ -f "$repo_root/package.json" ]; then
     echo "Detected existing Stream Deck repository at $repo_root"
@@ -28,12 +34,15 @@ fi
 
 # Clone repo when running outside it
 if [ "$in_repo" -eq 0 ]; then
-  if [ ! -d "Stream-Deck" ]; then
-    echo "Cloning Stream-Deck repo..."
-    git clone https://github.com/n47h4ni3l/Stream-Deck.git
+  target_dir="$HOME/Stream-Deck"
+  if [ ! -d "$target_dir" ]; then
+    echo "Cloning Stream-Deck repo to $target_dir..."
+    git clone https://github.com/n47h4ni3l/Stream-Deck.git "$target_dir"
   fi
-  cd Stream-Deck
+  cd "$target_dir"
 fi
+# Normalize line endings in case the script was cloned with CRLF
+sed -i 's/\r$//' StreamDeckLauncher.sh
 
 # Remember where the repository lives so we can update the desktop file later
 install_dir="$(pwd)"

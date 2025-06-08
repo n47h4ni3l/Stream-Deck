@@ -33,22 +33,23 @@ describe('install.sh', () => {
     fs.chmodSync(launcher, 0o755);
 
     const env = { ...process.env, HOME: tmpHome, PATH: `${binDir}:${process.env.PATH}` };
-    const result = spawnSync('bash', ['install.sh'], { cwd: repoRoot, env });
+    let result;
+    try {
+      result = spawnSync('bash', ['install.sh'], { cwd: repoRoot, env });
+      expect(result.status).toBe(0);
 
-    fs.writeFileSync(launcher, origLauncher);
-    fs.chmodSync(launcher, origMode);
+      const desktopPath = path.join(tmpHome, '.local', 'share', 'applications', 'StreamDeckLauncher.desktop');
+      const content = fs.readFileSync(desktopPath, 'utf8');
 
-    expect(result.status).toBe(0);
+      expect(content).toContain(`Exec=${repoRoot}/StreamDeckLauncher.sh`);
+      expect(content).toContain(`Path=${repoRoot}`);
+      expect(content).toContain(`Icon=${repoRoot}/icons/netflix.png`);
 
-    const desktopPath = path.join(tmpHome, '.local', 'share', 'applications', 'StreamDeckLauncher.desktop');
-    const content = fs.readFileSync(desktopPath, 'utf8');
-
-    expect(content).toContain(`Exec=${repoRoot}/StreamDeckLauncher.sh`);
-    expect(content).toContain(`Path=${repoRoot}`);
-    expect(content).toContain(`Icon=${repoRoot}/icons/netflix.png`);
-
-    fs.accessSync(desktopPath, fs.constants.X_OK);
-
-    fs.rmSync(tmpDir, { recursive: true, force: true });
+      fs.accessSync(desktopPath, fs.constants.X_OK);
+    } finally {
+      fs.writeFileSync(launcher, origLauncher);
+      fs.chmodSync(launcher, origMode);
+      fs.rmSync(tmpDir, { recursive: true, force: true });
+    }
   });
 });

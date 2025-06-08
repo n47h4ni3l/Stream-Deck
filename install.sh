@@ -114,8 +114,8 @@ desktop_file_target="$HOME/.local/share/applications/StreamDeckLauncher.desktop"
 echo "Copying StreamDeckLauncher.desktop to $desktop_file_target..."
 mkdir -p "$(dirname "$desktop_file_target")"
 # Replace the placeholder path in the .desktop file with the actual install directory
-sed_expr="s|\\\$HOME/Stream-Deck|$install_dir|g"
-sed "$sed_expr" StreamDeckLauncher.desktop > "$desktop_file_target"
+safe_dir=${install_dir//|/\\|}
+sed -e "s|\$HOME/Stream-Deck|$safe_dir|g" StreamDeckLauncher.desktop > "$desktop_file_target"
 
 chmod +x "$desktop_file_target"
 

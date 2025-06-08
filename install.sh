@@ -81,19 +81,17 @@ fi
 export VOLTA_HOME="$HOME/.volta"
 export PATH="$VOLTA_HOME/bin:$PATH"
 
-# Install Node.js and npm with Volta if not already installed
-if ! volta which node >/dev/null 2>&1; then
-  echo "Installing Node.js with Volta..."
-  volta install node
-else
-  echo "Node.js already installed via Volta."
-fi
+# Ensure required Node.js version from .nvmrc
+required_node="$(cat "$install_dir/.nvmrc")"
+current_node="$(node -v 2>/dev/null || echo none)"
 
-if ! volta which npm >/dev/null 2>&1; then
-  echo "Installing npm with Volta..."
-  volta install npm
+if [ "v$required_node" != "$current_node" ]; then
+  echo "Installing Node.js $required_node with Volta..."
+  volta install "node@$required_node"
+  volta install "npm@latest"
+  volta pin "node@$required_node"
 else
-  echo "npm already installed via Volta."
+  echo "Node.js $required_node already installed via Volta."
 fi
 
 # Install latest Ungoogled Chromium via Flatpak (new app ID)

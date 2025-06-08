@@ -16,6 +16,8 @@ bash /tmp/stream-deck-install.sh
 
 The checksum check ensures the script has not been tampered with before it
 installs dependencies and launches the Stream Deck Launcher.
+---
+
 The checksum changes whenever `install.sh` is modified, so recompute the hash if you download a new version.
 
 ---

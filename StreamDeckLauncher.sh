@@ -18,7 +18,7 @@ if command -v npx >/dev/null 2>&1; then
 elif command -v flatpak >/dev/null 2>&1; then
     NPX_CMD="flatpak run --command=npx org.nodejs.Node"
 else
-    echo "npx not found – install Node.js." >&2
+    echo "npx not found - install Node.js." >&2
     exit 1
 fi
 

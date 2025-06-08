@@ -82,7 +82,7 @@ CHROMIUM_CMD="/usr/bin/chromium --ozone-platform=wayland" ./StreamDeckLauncher.s
 
 ## Development
 
-This project uses **Node.js 18** as specified in `.nvmrc` and the CI workflow.
+This project requires **Node.js 18**, as specified in `.nvmrc` and the CI workflow.
 
 Install Node.js dependencies and run the test and lint tasks:
 

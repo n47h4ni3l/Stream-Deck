@@ -8,7 +8,9 @@ install_dir=""
 
 if [ -f "$desktop_file" ]; then
   # Extract install directory from Exec line in desktop file
-  exec_path=$(grep -E '^Exec=' "$desktop_file" | head -n1 | cut -d'=' -f2)
+  exec_path=$(grep -E '^Exec=' "$desktop_file" | head -n1 | cut -d'=' -f2-)
+  exec_path="${exec_path%\"}"
+  exec_path="${exec_path#\"}"
   install_dir="$(dirname "$exec_path")"
   rm -f "$desktop_file"
   echo "Removed $desktop_file"

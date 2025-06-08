@@ -14,6 +14,8 @@ echo "f39e1189e898c3f494f21561f2d755bbff384e34faacc1eb87e344cfcc29a6a8  /tmp/str
 bash /tmp/stream-deck-install.sh
 ```
 
+The installer clones the repository to `$HOME/Stream-Deck` if it isn't already present.
+
 The checksum check ensures the script has not been tampered with before it
 installs dependencies and launches the Stream Deck Launcher.
 ---

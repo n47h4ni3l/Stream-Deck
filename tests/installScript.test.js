@@ -25,6 +25,7 @@ describe('install.sh', () => {
     makeStub('volta', '#!/usr/bin/env bash\nif [ "$1" = "which" ]; then exit 0; else exit 0; fi\n');
     makeStub('npm', '#!/usr/bin/env bash\nexit 0\n');
     makeStub('npx', '#!/usr/bin/env bash\nexit 0\n');
+    makeStub('node', '#!/usr/bin/env bash\nif [ "$1" = "--version" ]; then echo v18.0.0; fi\n');
 
     const launcher = path.join(repoRoot, 'StreamDeckLauncher.sh');
     const origLauncher = fs.readFileSync(launcher);

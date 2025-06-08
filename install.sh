@@ -28,6 +28,7 @@ fi
 sed -i 's/\r$//' StreamDeckLauncher.sh
 
 install_dir="$(pwd)"
+chmod +x "$install_dir/StreamDeckLauncher.sh"
 
 # Ensure required commands exist
 for cmd in flatpak git curl sha256sum; do

@@ -1,34 +1,28 @@
-diff --git a/package.json b/package.json
-index 9c2f9367ee983af7496a46d6106865dd82bcc17d..1c3fd47da02194cf3c55aa988cf97bddf9c81a7a 100644
---- a/package.json
-+++ b/package.json
-@@ -1,23 +1,28 @@
- {
-   "name": "streamdeck-launcher",
-   "version": "1.0.0",
-   "description": "Stream Deck Launcher for Steam Deck - Unified Streaming Dashboard",
-   "main": "main.js",
-   "scripts": {
-     "start": "electron .",
-     "test": "jest",
-     "lint": "eslint .",
--    "build": "electron-builder -mwl"
-+    "build": "electron-builder -l"
-   },
-   "engines": {
-     "node": "18.x"
-   },
-+  "build": {
-+    "linux": {
-+      "icon": "build/icon.png"
-+    }
-+  },
-   "author": "N47H4NI3L <74298967+n47h4ni3l@users.noreply.github.com>",
-   "license": "MIT",
-   "devDependencies": {
-     "jest": "^29.7.0",
-     "eslint": "^8.56.0",
-     "electron-builder": "^24.6.0",
-     "electron": "^29.4.0"
-   }
- }
+{
+  "name": "streamdeck-launcher",
+  "version": "1.0.0",
+  "description": "Stream Deck Launcher for Steam Deck - Unified Streaming Dashboard",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "jest",
+    "lint": "eslint .",
+    "build": "electron-builder -l"
+  },
+  "engines": {
+    "node": "18.x"
+  },
+  "build": {
+    "linux": {
+      "icon": "build/icon.png"
+    }
+  },
+  "author": "N47H4NI3L <74298967+n47h4ni3l@users.noreply.github.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "eslint": "^8.56.0",
+    "electron-builder": "^24.6.0",
+    "electron": "^29.4.0"
+  }
+}

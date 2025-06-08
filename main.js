@@ -3,6 +3,19 @@ const { spawn } = require('child_process');
 const path = require('path');
 const fs = require('fs');
 
+// Log file path
+const logFile = path.join(__dirname, 'log.txt');
+
+function logError(msg, err = '') {
+  const entry = `${new Date().toISOString()} ${msg} ${err.stack || err}\n`;
+  try {
+    fs.appendFileSync(logFile, entry);
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.error('Failed to write log file:', e);
+  }
+}
+
 // Flatpak command for Ungoogled Chromium
 const defaultChromiumCommand = ['flatpak', 'run', 'io.github.ungoogled_software.ungoogled_chromium'];
 const chromiumCommand = process.env.CHROMIUM_CMD
@@ -46,6 +59,7 @@ function loadUsage() {
       usageData = JSON.parse(fs.readFileSync(usageFile));
     } catch (err) {
       console.warn('Failed to parse usage data, resetting.', err);
+      logError('Failed to parse usage data, resetting.', err);
       usageData = {};
       try {
         fs.unlinkSync(usageFile);
@@ -64,6 +78,7 @@ function saveUsage() {
     fs.writeFileSync(usageFile, JSON.stringify(usageData));
   } catch (err) {
     console.warn('Unable to save usage data:', err);
+    logError('Unable to save usage data:', err);
   }
 }
 
@@ -86,6 +101,7 @@ function launchService(serviceName, event) {
     saveUsage();
   } catch (err) {
     console.error('Failed to launch service:', err);
+    logError('Failed to launch service:', err);
     if (event && event.sender && typeof event.sender.send === 'function') {
       event.sender.send('launch-service-error', serviceName);
     }
@@ -120,6 +136,13 @@ function createWindow() {
 }
 
 if (require.main === module) {
+  process.on('uncaughtException', err => {
+    logError('Uncaught exception:', err);
+  });
+  process.on('unhandledRejection', reason => {
+    logError('Unhandled rejection:', reason);
+  });
+
   // App lifecycle
   app.whenReady().then(() => {
     loadUsage();
@@ -156,5 +179,7 @@ module.exports = {
   usageFile,
   usageData,
   launchService,
-  chromiumCommand
+  chromiumCommand,
+  logFile,
+  logError
 };

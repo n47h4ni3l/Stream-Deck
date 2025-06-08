@@ -11,6 +11,11 @@ export PATH="$VOLTA_HOME/bin:$PATH"
 # Set working directory to script location
 cd "$(dirname "$0")"
 
+# Set up logging
+LOG_FILE="$PWD/log.txt"
+exec > >(tee -a "$LOG_FILE") 2>&1
+set -x
+
 # Ensure npm dependencies are installed
 if [ ! -d node_modules/electron ]; then
     echo "Installing npm dependencies..."

@@ -63,6 +63,13 @@ Service logos remain the property of their respective owners. This project has n
 
 ---
 
+## Troubleshooting
+
+- All output from `StreamDeckLauncher.sh` is appended to `log.txt` inside the installation directory.
+- Run the launcher manually with `./StreamDeckLauncher.sh` to see verbose logs in your terminal.
+- Wayland mode activates when `XDG_SESSION_TYPE` is set to `wayland` (or `WAYLAND_DISPLAY` is present). Adjust these variables if the script launches under X11.
+
+
 ## Community
 We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for development guidelines and how to submit pull requests.
 

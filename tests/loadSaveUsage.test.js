@@ -44,4 +44,18 @@ describe('loadUsage and saveUsage', () => {
     const data = JSON.parse(fs.readFileSync(usageFile));
     expect(data['Hulu']).toBe(3);
   });
+
+  test('logs warning if saving usage fails', () => {
+    const err = new Error('fail');
+    const warn = jest.spyOn(console, 'warn').mockImplementation(() => {});
+    const orig = jest.spyOn(fs, 'writeFileSync').mockImplementation(() => {
+      throw err;
+    });
+
+    expect(() => saveUsage()).not.toThrow();
+    expect(warn).toHaveBeenCalled();
+
+    orig.mockRestore();
+    warn.mockRestore();
+  });
 });

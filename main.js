@@ -60,7 +60,11 @@ function loadUsage() {
 
 // Save usage data
 function saveUsage() {
-  fs.writeFileSync(usageFile, JSON.stringify(usageData));
+  try {
+    fs.writeFileSync(usageFile, JSON.stringify(usageData));
+  } catch (err) {
+    console.warn('Unable to save usage data:', err);
+  }
 }
 
 // Launch a service URL in Chromium and track usage

@@ -2,6 +2,11 @@
 
 set -euo pipefail
 
+# Always operate from the directory containing this script so relative paths
+# work regardless of where the installer was launched from.
+script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$script_dir"
+
 echo "Stream Deck Launcher Installer (Steam Deck Safe Version)"
 echo "--------------------------------------------"
 

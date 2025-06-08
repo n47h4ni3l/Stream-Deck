@@ -42,6 +42,8 @@ npm run lint
 ### Building packages
 Run `npm run build` to create distributable packages with Electron Builder. The artifacts appear in the `dist/` directory and currently only Linux output is generated.
 
+When reusing its cache electron-builder may warn that it "cannot move downloaded into final location". The message is harmless but you can remove `~/.cache/electron-builder` before running `npm run build` if you want to clear the cache.
+
 ## Adding a Service
 1. Add the service URL to the `services` object in [`main.js`](main.js). Use the desired display name as the key.
 2. Place a `150x150` PNG icon in the `icons/` directory. Filenames are derived from the service name by converting it to lowercase and stripping all non-alphanumeric characters, as done in `index.html`. For example, an icon for **Pluto TV** must be saved as `plutotv.png`.

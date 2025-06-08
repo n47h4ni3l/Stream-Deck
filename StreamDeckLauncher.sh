@@ -14,9 +14,9 @@ cd "$(dirname "$0")"
 
 # Determine how to run npx
 if command -v npx >/dev/null 2>&1; then
-    NPX_CMD="npx"
+    NPX_CMD=(npx)
 elif command -v flatpak >/dev/null 2>&1; then
-    NPX_CMD="flatpak run --command=npx org.nodejs.Node"
+    NPX_CMD=(flatpak run --command=npx org.nodejs.Node)
 else
     echo "npx not found - install Node.js." >&2
     exit 1
@@ -25,8 +25,8 @@ fi
 # Detect Wayland or X11
 if [ "${XDG_SESSION_TYPE:-}" = "wayland" ] || [ -n "${WAYLAND_DISPLAY:-}" ]; then
   echo "Detected Wayland session. Launching with Wayland flags..."
-  "$NPX_CMD" electron . --enable-features=UseOzonePlatform --ozone-platform=wayland
+  "${NPX_CMD[@]}" electron . --enable-features=UseOzonePlatform --ozone-platform=wayland
 else
   echo "Detected X11 session. Launching without Wayland flags..."
-  "$NPX_CMD" electron .
+  "${NPX_CMD[@]}" electron .
 fi

@@ -32,7 +32,12 @@ else
     exit 1
 fi
 
+# Log versions for troubleshooting
+node --version
+"${NPX_CMD[@]}" --version
+
 # Detect Wayland or X11
+set +e
 if [ "${XDG_SESSION_TYPE:-}" = "wayland" ] || [ -n "${WAYLAND_DISPLAY:-}" ]; then
   echo "Detected Wayland session. Launching with Wayland flags..."
   "${NPX_CMD[@]}" electron . --enable-features=UseOzonePlatform --ozone-platform=wayland
@@ -40,3 +45,10 @@ else
   echo "Detected X11 session. Launching without Wayland flags..."
   "${NPX_CMD[@]}" electron .
 fi
+exit_code=$?
+set -e
+echo "Electron exited with code $exit_code"
+if [ "$exit_code" -ne 0 ]; then
+  echo "An error occurred launching Electron. See $LOG_FILE for details."
+fi
+exit "$exit_code"

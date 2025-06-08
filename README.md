@@ -5,7 +5,9 @@ Stream Deck Launcher is a simple dashboard for launching streaming services on a
 ## Features
 - Large, controller-friendly interface
 - Remembers how often each service is launched and sorts tiles accordingly
-- Works with both Wayland and X11 sessions
+- Persistent logins for each service
+- Prevents the device from going to sleep while in video playback
+- Works with both Desktop Mode and Gaming Mode
 
 ## Installation
 Run the included `install.sh` script. It clones the repository if needed, installs the required Node.js version via [Volta](https://volta.sh), installs npm dependencies and creates a desktop entry:

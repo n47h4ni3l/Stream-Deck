@@ -35,8 +35,10 @@ fi
 # Clone repo when running outside it
 if [ "$in_repo" -eq 0 ]; then
   target_dir="$HOME/Stream-Deck"
-  if [ ! -d "$target_dir" ]; then
+  # Clone repository if the directory doesn't exist or appears incomplete
+  if [ ! -d "$target_dir" ] || [ ! -d "$target_dir/.git" ] || [ ! -f "$target_dir/StreamDeckLauncher.desktop" ]; then
     echo "Cloning Stream-Deck repo to $target_dir..."
+    rm -rf "$target_dir"
     git clone https://github.com/n47h4ni3l/Stream-Deck.git "$target_dir"
   fi
   cd "$target_dir"

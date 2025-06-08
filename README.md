@@ -18,6 +18,14 @@ bash install.sh
 
 After installation you will find **Stream Deck Launcher** in your application menu. You can also start it directly with `./StreamDeckLauncher.sh`.
 
+## Uninstallation
+Run `uninstall.sh` from the cloned repository to remove the launcher. The script
+deletes the desktop entry and the installation directory referenced inside it:
+
+```bash
+bash uninstall.sh
+```
+
 ## Custom Browser
 By default the launcher starts Ungoogled Chromium via Flatpak. Set the `CHROMIUM_CMD` environment variable to override the browser command. The value is split on whitespace and used as the executable and arguments.
 

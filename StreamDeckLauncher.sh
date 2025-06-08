@@ -23,10 +23,13 @@ else
 fi
 
 # Detect Wayland or X11
-if [ "${XDG_SESSION_TYPE:-}" = "wayland" ] || [ -n "${WAYLAND_DISPLAY:-}" ]; then
+if [ -n "${WAYLAND_DISPLAY-}" ]; then
   echo "Detected Wayland session. Launching with Wayland flags..."
   "$NPX_CMD" electron . --enable-features=UseOzonePlatform --ozone-platform=wayland
-else
+elif [ -n "${DISPLAY-}" ]; then
   echo "Detected X11 session. Launching without Wayland flags..."
+  "$NPX_CMD" electron .
+else
+  echo "Display server not detected. Defaulting to X11..."
   "$NPX_CMD" electron .
 fi

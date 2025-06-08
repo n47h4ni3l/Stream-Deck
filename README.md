@@ -10,7 +10,7 @@ Download and verify the installer script:
 ```bash
 curl -fsSL -o /tmp/stream-deck-install.sh \
   https://raw.githubusercontent.com/n47h4ni3l/Stream-Deck/main/install.sh
-echo "f39e1189e898c3f494f21561f2d755bbff384e34faacc1eb87e344cfcc29a6a8  /tmp/stream-deck-install.sh" | sha256sum -c -
+echo "511d86d2d7788f0dc70af0666fb1bee2b7f2e78b192da8a561dc4938bd4f1eaf  /tmp/stream-deck-install.sh" | sha256sum -c -
 bash /tmp/stream-deck-install.sh
 ```
 

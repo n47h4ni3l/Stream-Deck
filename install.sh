@@ -30,6 +30,9 @@ if [ "$in_repo" -eq 0 ]; then
   cd Stream-Deck
 fi
 
+# Remember where the repository lives so we can update the desktop file later
+install_dir="$(pwd)"
+
 # Ensure required commands are available
 command -v flatpak >/dev/null 2>&1 || {
   echo "flatpak is required but not installed. Aborting." >&2
@@ -92,11 +95,13 @@ chmod +x StreamDeckLauncher.sh
 # Install .desktop shortcut
 echo "Installing desktop shortcut..."
 
+
 desktop_file_target="$HOME/.local/share/applications/StreamDeckLauncher.desktop"
 
 echo "Copying StreamDeckLauncher.desktop to $desktop_file_target..."
 mkdir -p "$(dirname "$desktop_file_target")"
-cp StreamDeckLauncher.desktop "$desktop_file_target"
+# Replace the placeholder path in the .desktop file with the actual install directory
+sed "s|\\$HOME/Stream-Deck|$install_dir|g" StreamDeckLauncher.desktop > "$desktop_file_target"
 
 chmod +x "$desktop_file_target"
 

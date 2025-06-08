@@ -42,11 +42,10 @@ describe('install.sh', () => {
 
     const desktopPath = path.join(tmpHome, '.local', 'share', 'applications', 'StreamDeckLauncher.desktop');
     const content = fs.readFileSync(desktopPath, 'utf8');
-    const expanded = content.replace(/\$HOME/g, tmpHome);
 
-    expect(expanded).toContain(`Exec=${tmpHome}/Stream-Deck/StreamDeckLauncher.sh`);
-    expect(expanded).toContain(`Path=${tmpHome}/Stream-Deck`);
-    expect(expanded).toContain(`Icon=${tmpHome}/Stream-Deck/icons/netflix.png`);
+    expect(content).toContain(`Exec=${repoRoot}/StreamDeckLauncher.sh`);
+    expect(content).toContain(`Path=${repoRoot}`);
+    expect(content).toContain(`Icon=${repoRoot}/icons/netflix.png`);
 
     fs.accessSync(desktopPath, fs.constants.X_OK);
 

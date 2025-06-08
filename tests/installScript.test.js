@@ -45,7 +45,7 @@ describe('install.sh', () => {
 
     expect(content).toContain(`Exec=${repoRoot}/StreamDeckLauncher.sh`);
     expect(content).toContain(`Path=${repoRoot}`);
-    expect(content).toContain(`Icon=${repoRoot}/icons/netflix.png`);
+    expect(content).toContain(`Icon=${repoRoot}/build/icon.png`);
 
     fs.accessSync(desktopPath, fs.constants.X_OK);
 

@@ -34,6 +34,18 @@ Example:
 CHROMIUM_CMD="/usr/bin/chromium --ozone-platform=wayland" ./StreamDeckLauncher.sh
 ```
 
+To launch each service in a console-style window you can include kiosk or full-screen
+flags in `CHROMIUM_CMD`:
+
+```bash
+CHROMIUM_CMD="flatpak run io.github.ungoogled_software.ungoogled_chromium --kiosk" ./StreamDeckLauncher.sh
+```
+If you run the installer with `CHROMIUM_CMD` set, the desktop file will
+automatically include the same value so Gaming Mode launches Chromium in kiosk
+mode. You can still edit
+`~/.local/share/applications/StreamDeckLauncher.desktop` later if you want to
+change the command.
+
 ### Extra Electron Flags
 Set `ELECTRON_EXTRA_FLAGS` to append additional flags when launching Electron. This is useful for options like `--no-sandbox` that some SteamOS setups require.
 

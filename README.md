@@ -72,6 +72,8 @@ All launcher output is appended to `log.txt` in the installation directory. Run 
 
 Wayland mode automatically activates when `XDG_SESSION_TYPE=wayland` or `WAYLAND_DISPLAY` is set.
 
+`LD_PRELOAD` is cleared automatically to avoid conflicts with Steam's overlay.
+
 ---
 
 ## Community

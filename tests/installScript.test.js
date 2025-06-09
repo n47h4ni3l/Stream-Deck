@@ -29,10 +29,12 @@ describe('install.sh', () => {
     const origLauncher = fs.readFileSync(launcher);
     const origMode = fs.statSync(launcher).mode & 0o777;
     fs.writeFileSync(launcher, '#!/usr/bin/env bash\necho launch stub\n');
-    fs.chmodSync(launcher, 0o755);
+    fs.chmodSync(launcher, 0o755)
 
-    const env = { ...process.env, HOME: tmpHome, PATH: `${binDir}:${process.env.PATH}` };
-    const result = spawnSync('bash', ['install.sh'], { cwd: repoRoot, env });
+    const chromiumEnv = { ...process.env, HOME: tmpHome, PATH: `${binDir}:${process.env.PATH}`, CHROMIUM_CMD: chromiumCmd };
+
+// Update the `spawnSync` call in line 83 to use the renamed variable
+    const result = spawnSync('bash', ['install.sh'], { cwd: repoRoot, env: chromiumEnv });
 
     fs.writeFileSync(launcher, origLauncher);
     fs.chmodSync(launcher, origMode);

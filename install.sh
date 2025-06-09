@@ -74,13 +74,20 @@ npm install
 desktop_dir="$HOME/.local/share/applications"
 mkdir -p "$desktop_dir"
 desktop_file="$desktop_dir/StreamDeckLauncher.desktop"
+
+if [ -n "${CHROMIUM_CMD:-}" ]; then
+  exec_line="env CHROMIUM_CMD=\"${CHROMIUM_CMD}\" \"${install_dir}/StreamDeckLauncher.sh\""
+else
+  exec_line="\"${install_dir}/StreamDeckLauncher.sh\""
+fi
+
 cat > "$desktop_file" <<DESK
 [Desktop Entry]
 Version=1.0
 Type=Application
 Name=Stream Deck Launcher
 Comment=Unified streaming launcher for Steam Deck
-Exec="${install_dir}/StreamDeckLauncher.sh"
+Exec=${exec_line}
 Path="${install_dir}"
 Icon="${install_dir}/build/icon.png"
 Terminal=false

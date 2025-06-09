@@ -46,6 +46,14 @@ if [ -n "${ELECTRON_EXTRA_FLAGS:-}" ]; then
   EXTRA_ELECTRON_FLAGS=(${ELECTRON_EXTRA_FLAGS})
 fi
 
+# Automatically disable the sandbox when running as root unless already set
+if [ "${EUID:-$(id -u)}" -eq 0 ]; then
+  case " ${EXTRA_ELECTRON_FLAGS[*]} " in
+    *'--no-sandbox'*) ;;
+    *) EXTRA_ELECTRON_FLAGS+=("--no-sandbox") ;;
+  esac
+fi
+
 # Detect Wayland or X11
 set +e
 if [ "${XDG_SESSION_TYPE:-}" = "wayland" ] || [ -n "${WAYLAND_DISPLAY:-}" ]; then

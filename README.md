@@ -42,6 +42,8 @@ Example:
 ELECTRON_EXTRA_FLAGS="--no-sandbox" ./StreamDeckLauncher.sh
 ```
 
+The launcher automatically adds `--no-sandbox` when executed as the `root` user.
+
 ---
 
 ## Development
@@ -81,8 +83,7 @@ All launcher output is appended to `log.txt` in the installation directory. Run 
 Wayland mode automatically activates when `XDG_SESSION_TYPE=wayland` or `WAYLAND_DISPLAY` is set.
 
 `LD_PRELOAD` is cleared automatically to avoid conflicts with Steam's overlay.
-
-If Electron or Chromium refuses to start due to sandbox errors on SteamOS, pass the `--no-sandbox` flag using `ELECTRON_EXTRA_FLAGS` or by including it in `CHROMIUM_CMD`.
+The launcher adds `--no-sandbox` when run as `root`. If Electron or Chromium still refuses to start, pass additional flags using `ELECTRON_EXTRA_FLAGS` or include them in `CHROMIUM_CMD`.
 
 ---
 

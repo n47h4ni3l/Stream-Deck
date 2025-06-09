@@ -31,7 +31,7 @@ install_dir="$(pwd)"
 chmod +x "$install_dir/StreamDeckLauncher.sh"
 
 # Ensure required commands exist
-for cmd in flatpak git curl node npm npx; do
+for cmd in flatpak git curl; do
   if ! command -v "$cmd" >/dev/null 2>&1; then
     echo "$cmd is required but not installed. Aborting." >&2
     exit 1
@@ -57,14 +57,15 @@ export PATH="$VOLTA_HOME/bin:$PATH"
 # Ensure Node.js version matches .nvmrc
 required_node="$(cat "$install_dir/.nvmrc")"
 if ! command -v node >/dev/null 2>&1; then
-  echo "Node.js $required_node is required but not installed. Aborting." >&2
-  exit 1
-fi
-current_node="$(node --version)"
-current_major="$(echo "$current_node" | sed -E 's/^v([0-9]+).*$/\1/')"
-if [ "$current_major" != "$required_node" ]; then
-  echo "Detected Node.js $current_node but version $required_node is required. Aborting." >&2
-  exit 1
+  echo "Node.js $required_node is required but not installed. Installing with Volta..."
+  volta install "node@${required_node}"
+else
+  current_node="$(node --version)"
+  current_major="$(echo "$current_node" | sed -E 's/^v([0-9]+).*$/\1/')"
+  if [ "$current_major" != "$required_node" ]; then
+    echo "Detected Node.js $current_node but version $required_node is required. Installing with Volta..."
+    volta install "node@${required_node}"
+  fi
 fi
 
 # Install npm dependencies

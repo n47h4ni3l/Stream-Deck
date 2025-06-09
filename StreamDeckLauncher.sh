@@ -43,10 +43,14 @@ node --version
 set +e
 if [ "${XDG_SESSION_TYPE:-}" = "wayland" ] || [ -n "${WAYLAND_DISPLAY:-}" ]; then
   echo "Detected Wayland session. Launching with Wayland flags..."
-  "${NPX_CMD[@]}" electron . --enable-features=UseOzonePlatform --ozone-platform=wayland
+  export ELECTRON_ENABLE_LOGGING=1
+  export ELECTRON_ENABLE_STACK_DUMPING=1
+  ELECTRON_ENABLE_LOGGING=1 ELECTRON_ENABLE_STACK_DUMPING=1 "${NPX_CMD[@]}" electron . --enable-features=UseOzonePlatform --ozone-platform=wayland
 else
   echo "Detected X11 session. Launching without Wayland flags..."
-  "${NPX_CMD[@]}" electron .
+  export ELECTRON_ENABLE_LOGGING=1
+  export ELECTRON_ENABLE_STACK_DUMPING=1
+  ELECTRON_ENABLE_LOGGING=1 ELECTRON_ENABLE_STACK_DUMPING=1 "${NPX_CMD[@]}" electron .
 fi
 exit_code=$?
 set -e

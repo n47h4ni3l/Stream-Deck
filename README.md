@@ -17,6 +17,12 @@ bash install.sh
 ```
 
 After installation you will find **Stream Deck Launcher** in your application menu. You can also start it directly with `./StreamDeckLauncher.sh`.
+## Adding to Steam
+To launch the dashboard from Gaming Mode, add the script as a Non-Steam game:
+1. Open Steam in Desktop Mode and choose "Add a Non-Steam Game".
+2. Browse to the installation directory and select `StreamDeckLauncher.sh`.
+3. The script clears `LD_PRELOAD` internally so the Steam overlay does not crash Electron.
+
 
 ## Uninstallation
 Run `uninstall.sh` from the cloned repository to remove the launcher. The script
@@ -68,8 +74,7 @@ npm run lint
 `npm install` installs Jest and ESLint from `devDependencies`.
 
 ### Building packages
-Run `npm run build` to create distributable packages with Electron Builder. The artifacts appear in the `dist/` directory and currently only Linux output is generated.
-
+Run `npm run build` to create an AppImage with Electron Builder. The output appears in the `dist/` directory. To produce a Flatpak, add `"target": ["AppImage", "flatpak"]` under `build.linux` in `package.json` and run the command again.
 When reusing its cache electron-builder may warn that it "cannot move downloaded into final location". The message is harmless but you can remove `~/.cache/electron-builder` before running `npm run build` if you want to clear the cache.
 
 ## Adding a Service
@@ -93,6 +98,8 @@ All launcher output is appended to `log.txt` in the installation directory. Run 
 Wayland mode automatically activates when `XDG_SESSION_TYPE=wayland` or `WAYLAND_DISPLAY` is set.
 
 `LD_PRELOAD` is cleared automatically to avoid conflicts with Steam's overlay.
+
+If the shortcut launched through Steam crashes with a `SIGTRAP` or "zygote" error, check that `LD_PRELOAD` is cleared and try adding `--no-sandbox`. Review the `log.txt` file in your installation directory for details.
 
 If Electron or Chromium refuses to start due to sandbox errors on SteamOS, pass the `--no-sandbox` flag using `ELECTRON_EXTRA_FLAGS` or by including it in `CHROMIUM_CMD`.
 

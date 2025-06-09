@@ -34,6 +34,14 @@ Example:
 CHROMIUM_CMD="/usr/bin/chromium --ozone-platform=wayland" ./StreamDeckLauncher.sh
 ```
 
+### Extra Electron Flags
+Set `ELECTRON_EXTRA_FLAGS` to append additional flags when launching Electron. This is useful for options like `--no-sandbox` that some SteamOS setups require.
+
+Example:
+```bash
+ELECTRON_EXTRA_FLAGS="--no-sandbox" ./StreamDeckLauncher.sh
+```
+
 ---
 
 ## Development
@@ -73,6 +81,8 @@ All launcher output is appended to `log.txt` in the installation directory. Run 
 Wayland mode automatically activates when `XDG_SESSION_TYPE=wayland` or `WAYLAND_DISPLAY` is set.
 
 `LD_PRELOAD` is cleared automatically to avoid conflicts with Steam's overlay.
+
+If Electron or Chromium refuses to start due to sandbox errors on SteamOS, pass the `--no-sandbox` flag using `ELECTRON_EXTRA_FLAGS` or by including it in `CHROMIUM_CMD`.
 
 ---
 

@@ -31,7 +31,7 @@ install_dir="$(pwd)"
 chmod +x "$install_dir/StreamDeckLauncher.sh"
 
 # Ensure required commands exist
-for cmd in flatpak git curl sha256sum node; do
+for cmd in flatpak git curl node; do
   if ! command -v "$cmd" >/dev/null 2>&1; then
     echo "$cmd is required but not installed. Aborting." >&2
     exit 1

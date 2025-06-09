@@ -39,18 +39,25 @@ fi
 node --version
 "${NPX_CMD[@]}" --version
 
+# Parse optional extra Electron flags
+EXTRA_ELECTRON_FLAGS=()
+if [ -n "${ELECTRON_EXTRA_FLAGS:-}" ]; then
+  # shellcheck disable=SC2206
+  EXTRA_ELECTRON_FLAGS=(${ELECTRON_EXTRA_FLAGS})
+fi
+
 # Detect Wayland or X11
 set +e
 if [ "${XDG_SESSION_TYPE:-}" = "wayland" ] || [ -n "${WAYLAND_DISPLAY:-}" ]; then
   echo "Detected Wayland session. Launching with Wayland flags..."
   export ELECTRON_ENABLE_LOGGING=1
   export ELECTRON_ENABLE_STACK_DUMPING=1
-  ELECTRON_ENABLE_LOGGING=1 ELECTRON_ENABLE_STACK_DUMPING=1 "${NPX_CMD[@]}" electron . --enable-features=UseOzonePlatform --ozone-platform=wayland
+  ELECTRON_ENABLE_LOGGING=1 ELECTRON_ENABLE_STACK_DUMPING=1 "${NPX_CMD[@]}" electron . --enable-features=UseOzonePlatform --ozone-platform=wayland "${EXTRA_ELECTRON_FLAGS[@]}"
 else
   echo "Detected X11 session. Launching without Wayland flags..."
   export ELECTRON_ENABLE_LOGGING=1
   export ELECTRON_ENABLE_STACK_DUMPING=1
-  ELECTRON_ENABLE_LOGGING=1 ELECTRON_ENABLE_STACK_DUMPING=1 "${NPX_CMD[@]}" electron .
+  ELECTRON_ENABLE_LOGGING=1 ELECTRON_ENABLE_STACK_DUMPING=1 "${NPX_CMD[@]}" electron . "${EXTRA_ELECTRON_FLAGS[@]}"
 fi
 exit_code=$?
 set -e

@@ -53,8 +53,8 @@ describe('install.sh', () => {
     fs.rmSync(tmpDir, { recursive: true, force: true });
   });
 
-  test('persists CHROMIUM_CMD when provided', () => {
-    const repoRoot = path.resolve(__dirname, '..');
+    const chromiumEnv = { ...process.env, HOME: tmpHome, PATH: `${binDir}:${process.env.PATH}`, CHROMIUM_CMD: 'my-chrome --foo' };
+    const result = spawnSync('bash', ['install.sh'], { cwd: repoRoot, env: chromiumEnv });
     const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'install-test-'));
     const tmpHome = path.join(tmpDir, 'home');
     fs.mkdirSync(tmpHome);

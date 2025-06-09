@@ -99,8 +99,8 @@ describe('install.sh', () => {
 
   test('installs Node via Volta when missing', () => {
     const repoRoot = path.resolve(__dirname, '..');
-    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'install-test-'));
-    const tmpHome = path.join(tmpDir, 'home');
+    const env = { ...process.env, HOME: tmpHome, PATH: `${binDir}:${process.env.PATH}` };
+    const result = spawnSync('bash', ['install.sh'], { cwd: repoRoot, env });
     fs.mkdirSync(tmpHome);
 
     const binDir = path.join(tmpDir, 'bin');

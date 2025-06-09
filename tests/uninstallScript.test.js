@@ -59,4 +59,32 @@ describe('uninstall.sh', () => {
 
     fs.rmSync(tmpDir, { recursive: true, force: true });
   });
+
+  test('handles env prefix in Exec line', () => {
+    const repoRoot = path.resolve(__dirname, '..');
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'uninstall-test-'));
+    const tmpHome = path.join(tmpDir, 'home');
+    fs.mkdirSync(tmpHome);
+
+    const installDir = path.join(tmpDir, 'install-env');
+    fs.mkdirSync(installDir);
+    fs.writeFileSync(path.join(installDir, 'StreamDeckLauncher.sh'), '');
+
+    const desktopDir = path.join(tmpHome, '.local', 'share', 'applications');
+    fs.mkdirSync(desktopDir, { recursive: true });
+    const desktopFile = path.join(desktopDir, 'StreamDeckLauncher.desktop');
+    fs.writeFileSync(
+      desktopFile,
+      `[Desktop Entry]\nExec=env CHROMIUM_CMD="/usr/bin/chromium" "${installDir}/StreamDeckLauncher.sh"\nPath=${installDir}\n`
+    );
+
+    const env = { ...process.env, HOME: tmpHome };
+    const result = spawnSync('bash', ['uninstall.sh'], { cwd: repoRoot, env });
+
+    expect(result.status).toBe(0);
+    expect(fs.existsSync(desktopFile)).toBe(false);
+    expect(fs.existsSync(installDir)).toBe(false);
+
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+  });
 });

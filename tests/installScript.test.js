@@ -21,9 +21,8 @@ describe('install.sh', () => {
 
     makeStub('flatpak', '#!/usr/bin/env bash\nexit 0\n');
     makeStub('curl', '#!/usr/bin/env bash\nwhile [ "$1" != "" ]; do if [ "$1" = "-o" ]; then touch "$2"; shift 2; else shift; fi; done\nexit 0\n');
-    makeStub('volta', '#!/usr/bin/env bash\nif [ "$1" = "which" ]; then exit 0; else exit 0; fi\n');
+    makeStub('volta', '#!/usr/bin/env bash\nexit 0\n');
     makeStub('npm', '#!/usr/bin/env bash\nexit 0\n');
-    makeStub('npx', '#!/usr/bin/env bash\nexit 0\n');
     makeStub('node', '#!/usr/bin/env bash\nif [ "$1" = "--version" ]; then echo v18.0.0; fi\n');
 
     const launcher = path.join(repoRoot, 'StreamDeckLauncher.sh');
@@ -69,9 +68,8 @@ describe('install.sh', () => {
 
     makeStub('flatpak', '#!/usr/bin/env bash\nexit 0\n');
     makeStub('curl', '#!/usr/bin/env bash\nwhile [ "$1" != "" ]; do if [ "$1" = "-o" ]; then touch "$2"; shift 2; else shift; fi; done\nexit 0\n');
-    makeStub('volta', '#!/usr/bin/env bash\nif [ "$1" = "which" ]; then exit 0; else exit 0; fi\n');
+    makeStub('volta', '#!/usr/bin/env bash\nexit 0\n');
     makeStub('npm', '#!/usr/bin/env bash\nexit 0\n');
-    makeStub('npx', '#!/usr/bin/env bash\nexit 0\n');
     makeStub('node', '#!/usr/bin/env bash\nif [ "$1" = "--version" ]; then echo v18.0.0; fi\n');
 
     const launcher = path.join(repoRoot, 'StreamDeckLauncher.sh');
@@ -80,8 +78,8 @@ describe('install.sh', () => {
     fs.writeFileSync(launcher, '#!/usr/bin/env bash\necho launch stub\n');
     fs.chmodSync(launcher, 0o755);
 
-    const env = { ...process.env, HOME: tmpHome, PATH: `${binDir}:${process.env.PATH}`, CHROMIUM_CMD: 'my-chrome --foo' };
-    const result = spawnSync('bash', ['install.sh'], { cwd: repoRoot, env });
+    const chromiumEnv = { ...process.env, HOME: tmpHome, PATH: `${binDir}:${process.env.PATH}`, CHROMIUM_CMD: 'my-chrome --foo' };
+    const result = spawnSync('bash', ['install.sh'], { cwd: repoRoot, env: chromiumEnv });
 
     fs.writeFileSync(launcher, origLauncher);
     fs.chmodSync(launcher, origMode);
@@ -94,6 +92,50 @@ describe('install.sh', () => {
     expect(content).toContain(`Exec=env CHROMIUM_CMD="my-chrome --foo" "${repoRoot}/StreamDeckLauncher.sh"`);
 
     fs.accessSync(desktopPath, fs.constants.X_OK);
+
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+  });
+
+  test('installs Node via Volta when missing', () => {
+    const repoRoot = path.resolve(__dirname, '..');
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'install-test-'));
+    const tmpHome = path.join(tmpDir, 'home');
+    fs.mkdirSync(tmpHome);
+
+    const binDir = path.join(tmpDir, 'bin');
+    fs.mkdirSync(binDir);
+
+    const outputFile = path.join(tmpDir, 'volta_args');
+    const makeStub = (name, content) => {
+      const file = path.join(binDir, name);
+      fs.writeFileSync(file, content);
+      fs.chmodSync(file, 0o755);
+    };
+
+    makeStub('flatpak', '#!/usr/bin/env bash\nexit 0\n');
+    makeStub('curl', '#!/usr/bin/env bash\nwhile [ "$1" != "" ]; do if [ "$1" = "-o" ]; then touch "$2"; shift 2; else shift; fi; done\nexit 0\n');
+    makeStub('git', '#!/usr/bin/env bash\nexit 0\n');
+    makeStub('volta', `#!/usr/bin/env bash\necho "$@" >> "${outputFile}"\nexit 0\n`);
+    makeStub('npm', '#!/usr/bin/env bash\nexit 0\n');
+    // Omit the node stub so install.sh installs the required version via Volta
+
+    const launcher = path.join(repoRoot, 'StreamDeckLauncher.sh');
+    const origLauncher = fs.readFileSync(launcher);
+    const origMode = fs.statSync(launcher).mode & 0o777;
+    fs.writeFileSync(launcher, '#!/usr/bin/env bash\necho launch stub\n');
+    fs.chmodSync(launcher, 0o755);
+
+    const env = { ...process.env, HOME: tmpHome, PATH: `${binDir}:${process.env.PATH}` };
+    const result = spawnSync('bash', ['install.sh'], { cwd: repoRoot, env });
+
+    fs.writeFileSync(launcher, origLauncher);
+    fs.chmodSync(launcher, origMode);
+
+    expect(result.status).toBe(0);
+
+    const required = fs.readFileSync(path.join(repoRoot, '.nvmrc'), 'utf8').trim();
+    const args = fs.readFileSync(outputFile, 'utf8');
+    expect(args).toContain(`install node@${required}`);
 
     fs.rmSync(tmpDir, { recursive: true, force: true });
   });

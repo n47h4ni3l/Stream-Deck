@@ -92,6 +92,7 @@ describe('install.sh', () => {
 
     expect(content).toContain(`Exec=env CHROMIUM_CMD='${chromiumCmd.replace(/'/g, "'\\''")}' "${repoRoot}/StreamDeckLauncher.sh"`);
 
+    // No node stub here so install.sh falls back to Volta
     fs.accessSync(desktopPath, fs.constants.X_OK);
 
     fs.rmSync(tmpDir, { recursive: true, force: true });

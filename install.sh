@@ -77,7 +77,7 @@ mkdir -p "$desktop_dir"
 desktop_file="$desktop_dir/StreamDeckLauncher.desktop"
 
 if [ -n "${CHROMIUM_CMD:-}" ]; then
-  exec_line="env CHROMIUM_CMD=\"${CHROMIUM_CMD}\" \"${install_dir}/StreamDeckLauncher.sh\""
+  exec_line="env CHROMIUM_CMD=${CHROMIUM_CMD@Q} \"${install_dir}/StreamDeckLauncher.sh\""
 else
   exec_line="\"${install_dir}/StreamDeckLauncher.sh\""
 fi

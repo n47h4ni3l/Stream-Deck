@@ -56,16 +56,22 @@ export PATH="$VOLTA_HOME/bin:$PATH"
 
 # Ensure Node.js version matches .nvmrc
 required_node="$(cat "$install_dir/.nvmrc")"
+need_node=0
 if ! command -v node >/dev/null 2>&1; then
-  echo "Node.js $required_node is required but not installed. Installing with Volta..."
-  volta install "node@${required_node}"
+  need_node=1
 else
   current_node="$(node --version)"
   current_major="$(echo "$current_node" | sed -E 's/^v([0-9]+).*$/\1/')"
   if [ "$current_major" != "$required_node" ]; then
-    echo "Detected Node.js $current_node but version $required_node is required. Installing with Volta..."
-    volta install "node@${required_node}"
+    need_node=1
   fi
+fi
+# Install Node via Volta when missing or mismatched
+if [ "$need_node" -eq 1 ]; then
+  echo "Installing Node.js $required_node with Volta..."
+  volta install "node@${required_node}"
+  # Refresh hash table so the just-installed Node is found
+  hash -r
 fi
 
 # Install npm dependencies

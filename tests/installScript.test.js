@@ -78,7 +78,8 @@ describe('install.sh', () => {
     fs.writeFileSync(launcher, '#!/usr/bin/env bash\necho launch stub\n');
     fs.chmodSync(launcher, 0o755);
 
-    const env = { ...process.env, HOME: tmpHome, PATH: `${binDir}:${process.env.PATH}`, CHROMIUM_CMD: 'my-chrome --foo' };
+    const chromiumCmd = '/usr/bin/chromium --kiosk --flag="foo bar"';
+    const env = { ...process.env, HOME: tmpHome, PATH: `${binDir}:${process.env.PATH}`, CHROMIUM_CMD: chromiumCmd };
     const result = spawnSync('bash', ['install.sh'], { cwd: repoRoot, env });
 
     fs.writeFileSync(launcher, origLauncher);
@@ -89,7 +90,7 @@ describe('install.sh', () => {
     const desktopPath = path.join(tmpHome, '.local', 'share', 'applications', 'StreamDeckLauncher.desktop');
     const content = fs.readFileSync(desktopPath, 'utf8');
 
-    expect(content).toContain(`Exec=env CHROMIUM_CMD="my-chrome --foo" "${repoRoot}/StreamDeckLauncher.sh"`);
+    expect(content).toContain(`Exec=env CHROMIUM_CMD='${chromiumCmd.replace(/'/g, "'\\''")}' "${repoRoot}/StreamDeckLauncher.sh"`);
 
     fs.accessSync(desktopPath, fs.constants.X_OK);
 

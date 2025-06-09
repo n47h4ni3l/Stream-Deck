@@ -21,7 +21,6 @@ describe('install.sh', () => {
 
     makeStub('flatpak', '#!/usr/bin/env bash\nexit 0\n');
     makeStub('curl', '#!/usr/bin/env bash\nwhile [ "$1" != "" ]; do if [ "$1" = "-o" ]; then touch "$2"; shift 2; else shift; fi; done\nexit 0\n');
-    makeStub('sha256sum', '#!/usr/bin/env bash\ncat >/dev/null\nexit 0\n');
     makeStub('volta', '#!/usr/bin/env bash\nif [ "$1" = "which" ]; then exit 0; else exit 0; fi\n');
     makeStub('npm', '#!/usr/bin/env bash\nexit 0\n');
     makeStub('npx', '#!/usr/bin/env bash\nexit 0\n');

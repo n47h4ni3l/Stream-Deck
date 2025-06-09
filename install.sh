@@ -45,6 +45,7 @@ flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flath
 # Install Volta if not present
 if [ ! -d "$HOME/.volta" ]; then
   echo "Installing Volta..."
+# Install Node via Volta when missing or mismatched
   # Refresh hash table so the just-installed Node is found
   hash -r
 diff --git a/install.sh b/install.sh

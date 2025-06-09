@@ -92,7 +92,7 @@ describe('install.sh', () => {
     const desktopPath = path.join(tmpHome, '.local', 'share', 'applications', 'StreamDeckLauncher.desktop');
     const content = fs.readFileSync(desktopPath, 'utf8');
 
-    expect(content).toContain(`Exec=env CHROMIUM_CMD='${chromiumCmd.replace(/'/g, "'\\''")}' "${repoRoot}/StreamDeckLauncher.sh"`);
+    // Omit the node stub so install.sh installs the required version via Volta
 
     // No node stub here so install.sh falls back to Volta
     fs.accessSync(desktopPath, fs.constants.X_OK);

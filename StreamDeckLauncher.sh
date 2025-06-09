@@ -11,6 +11,9 @@ export PATH="$VOLTA_HOME/bin:$PATH"
 # Set working directory to script location
 cd "$(dirname "$0")"
 
+# Prevent Steam’s 32-bit overlay from breaking Electron
+unset LD_PRELOAD
+
 # Set up logging
 LOG_FILE="$PWD/log.txt"
 exec > >(tee -a "$LOG_FILE") 2>&1

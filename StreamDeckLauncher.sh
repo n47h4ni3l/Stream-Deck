@@ -50,6 +50,10 @@ EXTRA_ELECTRON_FLAGS=()
 if [ -n "${ELECTRON_EXTRA_FLAGS:-}" ]; then
   # shellcheck disable=SC2206
   EXTRA_ELECTRON_FLAGS=(${ELECTRON_EXTRA_FLAGS})
+  if [ -n "${ELECTRON_FLAGS_OUTPUT:-}" ]; then
+    mkdir -p "$(dirname "$ELECTRON_FLAGS_OUTPUT")"
+    echo "$ELECTRON_EXTRA_FLAGS" > "$ELECTRON_FLAGS_OUTPUT"
+  fi
 fi
 
 # Detect Wayland or X11

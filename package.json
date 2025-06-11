@@ -19,6 +19,9 @@
   },
   "author": "N47H4NI3L <74298967+n47h4ni3l@users.noreply.github.com>",
   "license": "MIT",
+  "dependencies": {
+    "shell-quote": "^1.8.3"
+  },
   "devDependencies": {
     "jest": "^29.7.0",
     "eslint": "^8.56.0",

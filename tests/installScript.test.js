@@ -80,9 +80,10 @@ describe('install.sh', () => {
     fs.writeFileSync(launcher, '#!/usr/bin/env bash\necho launch stub\n');
     fs.chmodSync(launcher, 0o755);
 
-    const chromiumCmd = '/usr/bin/chromium --kiosk --flag="foo bar"';
-    fs.writeFileSync('/usr/bin/chromium', '#!/usr/bin/env bash\nexit 0\n');
-    fs.chmodSync('/usr/bin/chromium', 0o755);
+    const chromiumBin = path.join(binDir, 'chromium');
+    const chromiumCmd = `${chromiumBin} --kiosk --flag="foo bar"`;
+    fs.writeFileSync(chromiumBin, '#!/usr/bin/env bash\nexit 0\n');
+    fs.chmodSync(chromiumBin, 0o755);
     const env = { ...process.env, HOME: tmpHome, PATH: `${binDir}:${process.env.PATH}`, CHROMIUM_CMD: chromiumCmd };
     const result = spawnSync('bash', ['install.sh'], { cwd: repoRoot, env });
 
@@ -98,7 +99,6 @@ describe('install.sh', () => {
 
     fs.accessSync(desktopPath, fs.constants.X_OK);
 
-    fs.rmSync('/usr/bin/chromium');
 
     fs.rmSync(tmpDir, { recursive: true, force: true });
   });

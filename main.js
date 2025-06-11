@@ -84,9 +84,11 @@ function launchService(serviceName, event) {
   if (!url) return;
 
   try {
+    const args = [...chromiumCommand.slice(1)];
+    if (!args.includes('--kiosk')) args.push('--kiosk');
     const child = spawn(
       chromiumCommand[0],
-      [...chromiumCommand.slice(1), url],
+      [...args, url],
       { detached: true, stdio: 'ignore' }
     );
     child.unref();

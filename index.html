@@ -33,6 +33,10 @@
             transform: scale(1.1);
             box-shadow: 0 0 20px rgba(102, 153, 255, 0.8);
         }
+        .tile.selected {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(102, 153, 255, 0.8);
+        }
         .tile img {
             max-width: 80%;
             max-height: 80%;
@@ -59,6 +63,69 @@
                 tile.appendChild(img);
                 document.body.appendChild(tile);
             }
+            initNavigation();
+        }
+
+        let tiles = [];
+        let selectedIndex = 0;
+        let columns = 1;
+
+        function updateColumns() {
+            if (!tiles.length) return;
+            const tile = tiles[0];
+            columns = Math.max(1, Math.floor(window.innerWidth / (tile.offsetWidth + 20)));
+        }
+
+        function highlight(index) {
+            if (!tiles.length) return;
+            tiles[selectedIndex].classList.remove('selected');
+            selectedIndex = (index + tiles.length) % tiles.length;
+            tiles[selectedIndex].classList.add('selected');
+        }
+
+        function handleKey(e) {
+            switch (e.key) {
+                case 'ArrowRight':
+                    highlight(selectedIndex + 1);
+                    break;
+                case 'ArrowLeft':
+                    highlight(selectedIndex - 1);
+                    break;
+                case 'ArrowDown':
+                    highlight(selectedIndex + columns);
+                    break;
+                case 'ArrowUp':
+                    highlight(selectedIndex - columns);
+                    break;
+                case 'Enter':
+                case ' ':
+                    tiles[selectedIndex].click();
+                    break;
+            }
+        }
+
+        let prevButtons = [];
+        function pollGamepad() {
+            const [gp] = navigator.getGamepads ? navigator.getGamepads() : [];
+            if (gp) {
+                const map = {12: 'ArrowUp', 13: 'ArrowDown', 14: 'ArrowLeft', 15: 'ArrowRight', 0: 'Enter'};
+                for (const idx in map) {
+                    const pressed = gp.buttons[idx] && gp.buttons[idx].pressed;
+                    if (pressed && !prevButtons[idx]) handleKey({ key: map[idx] });
+                    prevButtons[idx] = pressed;
+                }
+            }
+            requestAnimationFrame(pollGamepad);
+        }
+
+        function initNavigation() {
+            tiles = Array.from(document.querySelectorAll('.tile'));
+            if (!tiles.length) return;
+            updateColumns();
+            tiles[0].classList.add('selected');
+            window.addEventListener('keydown', handleKey);
+            window.addEventListener('resize', updateColumns);
+            requestAnimationFrame(pollGamepad);
         }
 
         loadTiles();

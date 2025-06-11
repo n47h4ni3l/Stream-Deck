@@ -136,51 +136,55 @@ function createWindow() {
   psbId = powerSaveBlocker.start('prevent-display-sleep');
 }
 
-if (require.main === module) {
-  process.on('uncaughtException', err => {
-    logError('Uncaught exception:', err);
-  });
-  process.on('unhandledRejection', reason => {
-    logError('Unhandled rejection:', reason);
-  });
+const { app, BrowserWindow, ipcMain, shell, powerSaveBlocker } = require('electron');
+const path = require('path');
 
-  // App lifecycle
-  app.whenReady().then(() => {
-    loadUsage();
-    createWindow();
+let mainWindow;
 
-    app.on('activate', function () {
-      if (BrowserWindow.getAllWindows().length === 0) createWindow();
-    });
-  });
-
-  app.on('window-all-closed', function () {
-    if (powerSaveBlocker.isStarted(psbId)) {
-      powerSaveBlocker.stop(psbId);
+function createWindow() {
+  console.log("Creating main window...");
+  mainWindow = new BrowserWindow({
+    width: 1000,
+    height: 700,
+    backgroundColor: '#1b1f2b',
+    webPreferences: {
+      contextIsolation: true,
+      preload: path.join(__dirname, 'preload.js')
     }
-    if (process.platform !== 'darwin') app.quit();
   });
 
-  // IPC: Launch service
-  ipcMain.on('launch-service', (event, serviceName) => {
-    launchService(serviceName, event);
-  });
-
-  // IPC: Get sorted services
-  ipcMain.handle('get-sorted-services', async () => {
-    return getSortedServices();
-  });
+  mainWindow.loadFile('index.html');
+  mainWindow.setMenuBarVisibility(false);
 }
 
-module.exports = {
-  getSortedServices,
-  services,
-  loadUsage,
-  saveUsage,
-  usageFile,
-  usageData,
-  launchService,
-  chromiumCommand,
-  logFile,
-  logError
-};
+app.whenReady().then(() => {
+  // Prevent the Steam Deck from sleeping
+  powerSaveBlocker.start('prevent-display-sleep');
+
+  createWindow();
+
+  app.on('activate', () => {
+    if (BrowserWindow.getAllWindows().length === 0) createWindow();
+  });
+});
+
+app.on('window-all-closed', () => {
+  if (process.platform !== 'darwin') app.quit();
+});
+
+// Handle service launch requests
+ipcMain.on('launch-service', (event, url) => {
+  const chromiumCommand = process.env.CHROMIUM_CMD;
+
+  if (chromiumCommand) {
+    const [cmd, ...args] = chromiumCommand.split(' ');
+    const spawn = require('child_process').spawn;
+    spawn(cmd, [...args, url], {
+      detached: true,
+      stdio: 'ignore'
+    }).unref();
+  } else {
+    // Fallback: use Electron's shell
+    shell.openExternal(url);
+  }
+});

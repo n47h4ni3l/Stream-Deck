@@ -2,6 +2,7 @@ const { app, BrowserWindow, ipcMain, powerSaveBlocker } = require('electron');
 const { spawn } = require('child_process');
 const path = require('path');
 const fs = require('fs');
+const shellQuote = require('shell-quote');
 
 // Log file path
 const logFile = path.join(__dirname, 'log.txt');
@@ -19,7 +20,7 @@ function logError(msg, err = '') {
 // Flatpak command for Ungoogled Chromium
 const defaultChromiumCommand = ['flatpak', 'run', 'io.github.ungoogled_software.ungoogled_chromium'];
 const chromiumCommand = process.env.CHROMIUM_CMD
-  ? process.env.CHROMIUM_CMD.split(/\s+/)
+  ? shellQuote.parse(process.env.CHROMIUM_CMD)
   : defaultChromiumCommand;
 
 // No-sleep blocker

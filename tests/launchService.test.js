@@ -58,19 +58,30 @@ describe('launchService', () => {
 
   test('uses CHROMIUM_CMD environment variable when set', () => {
     jest.resetModules();
-    process.env.CHROMIUM_CMD = 'custom-chrome --foo';
+    process.env.CHROMIUM_CMD = '/usr/bin/chromium --flag="foo bar"';
 
     const { spawn } = require('child_process');
     const { launchService: launchWithEnv, services, chromiumCommand } = require('../main');
 
     launchWithEnv('Prime');
 
-    expect(chromiumCommand).toEqual(['custom-chrome', '--foo']);
+    expect(chromiumCommand).toEqual(['/usr/bin/chromium', '--flag=foo bar']);
     expect(spawn).toHaveBeenCalledWith(
       chromiumCommand[0],
       [...chromiumCommand.slice(1), services['Prime']],
       { detached: true, stdio: 'ignore' }
     );
+
+    delete process.env.CHROMIUM_CMD;
+  });
+
+  test('parses CHROMIUM_CMD with quoted path', () => {
+    jest.resetModules();
+    process.env.CHROMIUM_CMD = '"/opt/My Browser/chrome" --incognito';
+
+    const { chromiumCommand } = require('../main');
+
+    expect(chromiumCommand).toEqual(['/opt/My Browser/chrome', '--incognito']);
 
     delete process.env.CHROMIUM_CMD;
   });

@@ -16,6 +16,8 @@ Run the included `install.sh` script. It clones the repository if needed, instal
 bash install.sh
 ```
 
+The installer verifies that your chosen browser exists. If you select the bundled Ungoogled Chromium and it is missing, the Flatpak is installed automatically (ensure the `flatpak` command is available). Custom commands must resolve to an executable or the install will abort.
+
 After installation you will find **Stream Deck Launcher** in your application menu. You can also start it directly with `./StreamDeckLauncher.sh`.
 If you later want to change the browser command, edit the `browser_cmd` file in the installation directory.
 ## Adding to Steam

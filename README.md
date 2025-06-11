@@ -43,6 +43,9 @@ Example:
 ```bash
 ELECTRON_EXTRA_FLAGS="--no-sandbox" ./StreamDeckLauncher.sh
 ```
+Set `ELECTRON_FLAGS_OUTPUT` to a file path to capture the flags used during
+launch. The script creates the directory if needed and writes the contents of
+`ELECTRON_EXTRA_FLAGS` for debugging purposes.
 
 ---
 

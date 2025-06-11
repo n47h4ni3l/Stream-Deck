@@ -4,6 +4,8 @@ Stream Deck Launcher is a simple dashboard for launching streaming services on a
 
 ## Features
 - Large, controller-friendly interface
+- Controller or keyboard navigation between tiles
+- Services open in Chromium kiosk mode for a streamlined experience
 - Remembers how often each service is launched and sorts tiles accordingly
 - Persistent logins for each service
 - Prevents the device from going to sleep while in video playback

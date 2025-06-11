@@ -33,7 +33,7 @@ describe('launchService', () => {
     launchService('Netflix');
     expect(spawn).toHaveBeenCalledWith(
       chromiumCommand[0],
-      [...chromiumCommand.slice(1), services['Netflix']],
+      expect.arrayContaining(['--kiosk', services['Netflix']]),
       { detached: true, stdio: 'ignore' }
     );
   });
@@ -68,7 +68,7 @@ describe('launchService', () => {
     expect(chromiumCommand).toEqual(['/usr/bin/chromium', '--flag=foo bar']);
     expect(spawn).toHaveBeenCalledWith(
       chromiumCommand[0],
-      [...chromiumCommand.slice(1), services['Prime']],
+      expect.arrayContaining(['--flag=foo bar', '--kiosk', services['Prime']]),
       { detached: true, stdio: 'ignore' }
     );
 

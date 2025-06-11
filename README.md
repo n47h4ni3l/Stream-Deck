@@ -10,13 +10,14 @@ Stream Deck Launcher is a simple dashboard for launching streaming services on a
 - Works with both Desktop Mode and Gaming Mode
 
 ## Installation
-Run the included `install.sh` script. It clones the repository if needed, installs the required Node.js version via [Volta](https://volta.sh), installs npm dependencies and creates a desktop entry:
+Run the included `install.sh` script. It clones the repository if needed, installs the required Node.js version via [Volta](https://volta.sh), installs npm dependencies and creates a desktop entry. During installation a pop-up window lets you choose between the bundled Ungoogled Chromium or a custom browser command:
 
 ```bash
 bash install.sh
 ```
 
 After installation you will find **Stream Deck Launcher** in your application menu. You can also start it directly with `./StreamDeckLauncher.sh`.
+If you later want to change the browser command, edit the `browser_cmd` file in the installation directory.
 ## Adding to Steam
 To launch the dashboard from Gaming Mode, add the script as a Non-Steam game:
 1. Open Steam in Desktop Mode and choose "Add a Non-Steam Game".
@@ -32,25 +33,6 @@ deletes the desktop entry and the installation directory referenced inside it:
 bash uninstall.sh
 ```
 
-## Custom Browser
-By default the launcher starts Ungoogled Chromium via Flatpak. Set the `CHROMIUM_CMD` environment variable to override the browser command. The value is split on whitespace and used as the executable and arguments.
-
-Example:
-```bash
-CHROMIUM_CMD="/usr/bin/chromium --ozone-platform=wayland" ./StreamDeckLauncher.sh
-```
-
-To launch each service in a console-style window you can include kiosk or full-screen
-flags in `CHROMIUM_CMD`:
-
-```bash
-CHROMIUM_CMD="flatpak run io.github.ungoogled_software.ungoogled_chromium --kiosk" ./StreamDeckLauncher.sh
-```
-If you run the installer with `CHROMIUM_CMD` set, the desktop file will
-automatically include the same value so Gaming Mode launches Chromium in kiosk
-mode. You can still edit
-`~/.local/share/applications/StreamDeckLauncher.desktop` later if you want to
-change the command.
 
 ### Extra Electron Flags
 Set `ELECTRON_EXTRA_FLAGS` to append additional flags when launching Electron. This is useful for options like `--no-sandbox` that some SteamOS setups require.
@@ -101,7 +83,7 @@ Wayland mode automatically activates when `XDG_SESSION_TYPE=wayland` or `WAYLAND
 
 If the shortcut launched through Steam crashes with a `SIGTRAP` or "zygote" error, check that `LD_PRELOAD` is cleared and try adding `--no-sandbox`. Review the `log.txt` file in your installation directory for details.
 
-If Electron or Chromium refuses to start due to sandbox errors on SteamOS, pass the `--no-sandbox` flag using `ELECTRON_EXTRA_FLAGS` or by including it in `CHROMIUM_CMD`.
+If Electron or Chromium refuses to start due to sandbox errors on SteamOS, pass the `--no-sandbox` flag using `ELECTRON_EXTRA_FLAGS` or include it in your chosen browser command.
 
 ---
 

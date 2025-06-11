@@ -33,3 +33,4 @@ dist/
 
 # File storing command usage history
 usage.json
+browser_cmd

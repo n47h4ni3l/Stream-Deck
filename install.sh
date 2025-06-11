@@ -71,6 +71,28 @@ fi
 # Install npm dependencies
 npm install
 
+# Prompt for browser choice if CHROMIUM_CMD not pre-set and zenity available
+if [ -z "${CHROMIUM_CMD:-}" ] && command -v zenity >/dev/null 2>&1 && [ -n "${DISPLAY:-}" ]; then
+  set +e
+  choice=$(zenity --list --radiolist \
+    --title="Browser Selection" \
+    --text="Choose the browser used for streaming services" \
+    --column="Select" --column="Browser" \
+    TRUE "Bundled Ungoogled Chromium" \
+    FALSE "Installed Browser")
+  if [ "$choice" = "Installed Browser" ]; then
+    CHROMIUM_CMD="$(zenity --entry --title="Custom Browser Command" --text="Enter the browser command")"
+  fi
+  set -e
+fi
+
+# Persist selected browser command
+if [ -n "${CHROMIUM_CMD:-}" ]; then
+  echo "$CHROMIUM_CMD" > "$install_dir/browser_cmd"
+else
+  rm -f "$install_dir/browser_cmd"
+fi
+
 # Create desktop file
 desktop_dir="$HOME/.local/share/applications"
 mkdir -p "$desktop_dir"

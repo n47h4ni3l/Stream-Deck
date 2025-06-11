@@ -11,6 +11,12 @@ export PATH="$VOLTA_HOME/bin:$PATH"
 # Set working directory to script location
 cd "$(dirname "$0")"
 
+# Load browser command chosen during installation
+if [ -z "${CHROMIUM_CMD:-}" ] && [ -f browser_cmd ]; then
+  CHROMIUM_CMD="$(cat browser_cmd)"
+  export CHROMIUM_CMD
+fi
+
 # Prevent Steam’s 32-bit overlay from breaking Electron
 unset LD_PRELOAD
 

@@ -47,13 +47,10 @@ const services = {
 };
 
 // Usage tracking file
-const userDataPath = app && typeof app.getPath === 'function'
-  ? app.getPath('userData')
-  : __dirname;
+const userDataPath = app && typeof app.getPath === 'function' ? app.getPath('userData') : __dirname;
 const usageFile = path.join(userDataPath, 'usage.json');
 let usageData = {};
 
-// Load usage data
 function loadUsage() {
   if (fs.existsSync(usageFile)) {
     try {
@@ -73,7 +70,6 @@ function loadUsage() {
   }
 }
 
-// Save usage data
 function saveUsage() {
   try {
     fs.writeFileSync(usageFile, JSON.stringify(usageData));
@@ -83,12 +79,9 @@ function saveUsage() {
   }
 }
 
-// Launch a service URL in Chromium and track usage
 function launchService(serviceName, event) {
   const url = services[serviceName];
-  if (!url) {
-    return;
-  }
+  if (!url) return;
 
   try {
     const child = spawn(
@@ -109,16 +102,13 @@ function launchService(serviceName, event) {
   }
 }
 
-// Sort services by usage
 function getSortedServices(data = usageData) {
-  return Object.keys(services).sort((a, b) => {
-    return (data[b] || 0) - (data[a] || 0);
-  });
+  return Object.keys(services).sort((a, b) => (data[b] || 0) - (data[a] || 0));
 }
 
-// Create window
+let mainWindow;
 function createWindow() {
-  const win = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 1280,
     height: 800,
     fullscreen: true,
@@ -126,65 +116,53 @@ function createWindow() {
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
-      nodeIntegration: false,
-    }
-  });
-
-  win.loadFile('index.html');
-
-  // Prevent sleep
-  psbId = powerSaveBlocker.start('prevent-display-sleep');
-}
-
-const { app, BrowserWindow, ipcMain, shell, powerSaveBlocker } = require('electron');
-const path = require('path');
-
-let mainWindow;
-
-function createWindow() {
-  console.log("Creating main window...");
-  mainWindow = new BrowserWindow({
-    width: 1000,
-    height: 700,
-    backgroundColor: '#1b1f2b',
-    webPreferences: {
-      contextIsolation: true,
-      preload: path.join(__dirname, 'preload.js')
+      nodeIntegration: false
     }
   });
 
   mainWindow.loadFile('index.html');
   mainWindow.setMenuBarVisibility(false);
+
+  psbId = powerSaveBlocker.start('prevent-display-sleep');
 }
 
-app.whenReady().then(() => {
-  // Prevent the Steam Deck from sleeping
-  powerSaveBlocker.start('prevent-display-sleep');
-
-  createWindow();
-
-  app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) createWindow();
+if (require.main === module) {
+  process.on('uncaughtException', err => {
+    logError('Uncaught exception:', err);
   });
-});
+  process.on('unhandledRejection', reason => {
+    logError('Unhandled rejection:', reason);
+  });
 
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') app.quit();
-});
+  app.whenReady().then(() => {
+    loadUsage();
+    createWindow();
 
-// Handle service launch requests
-ipcMain.on('launch-service', (event, url) => {
-  const chromiumCommand = process.env.CHROMIUM_CMD;
+    app.on('activate', () => {
+      if (BrowserWindow.getAllWindows().length === 0) createWindow();
+    });
+  });
 
-  if (chromiumCommand) {
-    const [cmd, ...args] = chromiumCommand.split(' ');
-    const spawn = require('child_process').spawn;
-    spawn(cmd, [...args, url], {
-      detached: true,
-      stdio: 'ignore'
-    }).unref();
-  } else {
-    // Fallback: use Electron's shell
-    shell.openExternal(url);
-  }
-});
+  app.on('window-all-closed', () => {
+    if (powerSaveBlocker.isStarted(psbId)) powerSaveBlocker.stop(psbId);
+    if (process.platform !== 'darwin') app.quit();
+  });
+
+  ipcMain.on('launch-service', (event, serviceName) => {
+    launchService(serviceName, event);
+  });
+  ipcMain.handle('get-sorted-services', () => getSortedServices());
+}
+
+module.exports = {
+  getSortedServices,
+  services,
+  loadUsage,
+  saveUsage,
+  usageFile,
+  usageData,
+  launchService,
+  chromiumCommand,
+  logFile,
+  logError
+};

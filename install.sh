@@ -86,6 +86,41 @@ if [ -z "${CHROMIUM_CMD:-}" ] && command -v zenity >/dev/null 2>&1 && [ -n "${DI
   set -e
 fi
 
+# Ensure selected browser is installed
+if [ -n "${CHROMIUM_CMD:-}" ]; then
+  set +e +u
+  eval "set -- $CHROMIUM_CMD"
+  browser_bin="$1"
+  set -euo pipefail
+  if ! command -v "$browser_bin" >/dev/null 2>&1; then
+    echo "Browser $browser_bin not found. Attempting Flatpak install..."
+    case "$browser_bin" in
+      firefox)
+        flatpak_id="org.mozilla.firefox" ;;
+      chromium)
+        flatpak_id="org.chromium.Chromium" ;;
+      google-chrome|chrome)
+        flatpak_id="com.google.Chrome" ;;
+      brave|brave-browser)
+        flatpak_id="com.brave.Browser" ;;
+      *)
+        flatpak_id="" ;;
+    esac
+    if [ -n "$flatpak_id" ]; then
+      flatpak install --user --noninteractive -y flathub "$flatpak_id" || true
+    fi
+    if ! command -v "$browser_bin" >/dev/null 2>&1; then
+      echo "Browser command $browser_bin still not found. Aborting." >&2
+      exit 1
+    fi
+  fi
+else
+  if ! flatpak info io.github.ungoogled_software.ungoogled_chromium >/dev/null 2>&1; then
+    echo "Installing Ungoogled Chromium Flatpak..."
+    flatpak install --user --noninteractive -y flathub io.github.ungoogled_software.ungoogled_chromium
+  fi
+fi
+
 # Persist selected browser command
 if [ -n "${CHROMIUM_CMD:-}" ]; then
   echo "$CHROMIUM_CMD" > "$install_dir/browser_cmd"

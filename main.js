@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, powerSaveBlocker } = require('electron');
+const { app, BrowserWindow, ipcMain, powerSaveBlocker, screen } = require('electron');
 const { spawn } = require('child_process');
 const path = require('path');
 const fs = require('fs');
@@ -125,7 +125,23 @@ function createWindow() {
   mainWindow.loadFile('index.html');
   mainWindow.setMenuBarVisibility(false);
 
+  mainWindow.once('ready-to-show', () => {
+    setTimeout(checkWindowVisibility, 1000);
+  });
+
   psbId = powerSaveBlocker.start('prevent-display-sleep');
+}
+
+function checkWindowVisibility() {
+  if (!mainWindow) return;
+  const cursor = screen.getCursorScreenPoint();
+  const bounds = mainWindow.getBounds();
+  const visible = mainWindow.isVisible();
+  if (!visible ||
+    cursor.x < bounds.x || cursor.x > bounds.x + bounds.width ||
+    cursor.y < bounds.y || cursor.y > bounds.y + bounds.height) {
+    logError('Window may not be visible. Cursor outside window bounds.');
+  }
 }
 
 if (require.main === module) {
@@ -166,5 +182,6 @@ module.exports = {
   launchService,
   chromiumCommand,
   logFile,
-  logError
+  logError,
+  checkWindowVisibility
 };

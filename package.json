@@ -1,0 +1,85 @@
+{
+  "name": "streamdeck-launcher",
+  "version": "1.1.0-beta.1",
+  "description": "Stream Deck Launcher for Steam Deck - Unified Streaming Dashboard",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/n47h4ni3l/Stream-Deck.git"
+  },
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "jest",
+    "test:smoke": "node scripts/smoke.js",
+    "test:features": "node scripts/feature-smoke.js",
+    "test:release": "node scripts/verify-release.js",
+    "lint": "eslint . --ext .js,.cjs",
+    "build": "node scripts/build-release.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "build": {
+    "appId": "io.github.n47h4ni3l.streamdecklauncher",
+    "artifactName": "streamdeck-launcher-${version}-linux-x86_64.${ext}",
+    "publish": [],
+    "afterPack": "scripts/after-pack.cjs",
+    "appImage": {
+      "executableArgs": [
+        "--enable-sandbox"
+      ]
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "renderer.js",
+      "index.html",
+      "icons/**",
+      "build/icon.png",
+      "setup/**",
+      "LICENSE",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "build/icon.png",
+        "to": "icon.png"
+      },
+      {
+        "from": "setup",
+        "to": "setup"
+      },
+      {
+        "from": "node_modules/shell-quote",
+        "to": "setup/node_modules/shell-quote"
+      }
+    ],
+    "linux": {
+      "icon": "build/icon.png",
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "category": "AudioVideo",
+      "desktop": {
+        "Name": "Stream Deck Launcher"
+      }
+    }
+  },
+  "author": "N47H4NI3L <74298967+n47h4ni3l@users.noreply.github.com>",
+  "license": "MIT",
+  "dependencies": {
+    "shell-quote": "^1.8.3"
+  },
+  "devDependencies": {
+    "electron": "^29.4.0",
+    "electron-builder": "^24.6.0",
+    "eslint": "^8.56.0",
+    "jest": "^29.7.0",
+    "ws": "8.18.3"
+  }
+}

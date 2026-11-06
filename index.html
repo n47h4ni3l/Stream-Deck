@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Stream Deck Launcher</title>
+    <style>
+        body {
+            background-color: #1b2838; /* Steam dark purple/blue */
+            color: white;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        header, footer { width: 100%; text-align: center; padding: 8px; }
+        button, input { font: inherit; }
+        button { padding: 10px 18px; margin: 6px; border-radius: 8px; cursor: pointer; }
+        button:focus, input:focus { outline: 3px solid #8dc8ff; }
+        #setup-panel { position: fixed; inset: 6%; z-index: 10; background: #1b2838; border: 2px solid #8dc8ff; padding: 20px; overflow-y: auto; }
+        #steam-choices button { display: block; width: 95%; overflow-wrap: anywhere; }
+        [hidden] { display: none !important; }
+        .tile {
+            margin: 10px;
+            width: 150px;
+            height: 150px;
+            background-color: #2a3b4c;
+            border-radius: 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        .tile:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(102, 153, 255, 0.8);
+        }
+        .tile.selected {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(102, 153, 255, 0.8);
+        }
+        .tile img {
+            max-width: 80%;
+            max-height: 80%;
+        }
+    </style>
+</head>
+<body>
+    <header><strong>Stream Deck Launcher</strong> <button id="setup-button">Setup · Menu / F1</button></header>
+    <footer id="integration-summary" aria-live="polite">Checking playback and Steam setup…</footer>
+    <section id="setup-panel" hidden aria-label="Launcher setup">
+      <h1>Launcher setup</h1>
+      <p id="steam-status"></p><button id="steam-retry">Retry Steam setup</button>
+      <div id="steam-choices"></div>
+      <h2>Playback-aware sleep prevention</h2><p id="playback-status"></p>
+      <p>This follows the configured browser's reported media state, including other tabs. No media titles, URLs or viewing history are read or stored. Quitting the launcher stops detection.</p>
+      <h2>Controller return</h2><p id="return-status"></p>
+      <label><input id="browser-return" type="checkbox"> Allow B to return from the configured browser on X11/XWayland</label>
+      <p>The open launcher reads its normal Gamepad API while behind the browser. It only raises this dashboard when the configured browser is in front; it does not close browser windows, send page-back commands, or register global keyboard hooks. Native Wayland and physical Steam Input acceptance remain unverified.</p>
+      <button id="setup-close">Back · B / Escape</button>
+    </section>
+    <script src="renderer.js"></script>
+</body>
+</html>

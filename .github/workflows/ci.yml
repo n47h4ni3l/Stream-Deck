@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - name: Install dependencies
+        run: npm ci
+      - name: Lint
+        run: npm run lint
+      - name: Test
+        run: npm test
+      - name: Install Electron smoke test libraries
+        run: sudo apt-get update && sudo apt-get install -y xvfb libnss3 libatk-bridge2.0-0 libgtk-3-0 libgbm1 libasound2t64 dbus-x11 libglib2.0-bin python3-gi x11-utils
+      - name: Launch the real Electron dashboard
+        run: xvfb-run -a npm run test:smoke -- --no-sandbox --disable-gpu --ozone-platform=x11
+      - name: Check first-run browser setup with an isolated Flatpak fixture
+        run: xvfb-run -a npm run test:smoke -- --setup-fixture --no-sandbox --disable-gpu --ozone-platform=x11
+      - name: Check controller, Steam and playback integration with isolated fixtures
+        run: xvfb-run -a npm run test:features -- --no-sandbox --disable-gpu --ozone-platform=x11

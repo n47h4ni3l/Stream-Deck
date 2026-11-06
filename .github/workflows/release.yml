@@ -1,0 +1,78 @@
+name: Release
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      - name: Install dependencies
+        run: npm ci
+      - name: Check release tag matches package version
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: node -e 'require("assert").strictEqual(process.env.RELEASE_TAG, "v" + require("./package.json").version)'
+      - name: Lint
+        run: npm run lint
+      - name: Test
+        run: npm test
+      - name: Install smoke test libraries
+        run: sudo apt-get update && sudo apt-get install -y xvfb libnss3 libatk-bridge2.0-0 libgtk-3-0 libgbm1 libasound2 desktop-file-utils dbus-x11 libglib2.0-bin python3-gi x11-utils
+      - name: Launch the source dashboard
+        run: xvfb-run -a npm run test:smoke -- --no-sandbox --disable-gpu --ozone-platform=x11
+      - name: Check first-run browser setup with an isolated Flatpak fixture
+        run: xvfb-run -a npm run test:smoke -- --setup-fixture --no-sandbox --disable-gpu --ozone-platform=x11
+      - name: Check controller, Steam and playback integration with isolated fixtures
+        run: xvfb-run -a npm run test:features -- --no-sandbox --disable-gpu --ozone-platform=x11
+      - name: Build
+        run: npm run build
+      - name: Verify install, packaged dashboard, AppImage and uninstall
+        run: dbus-run-session -- xvfb-run -a npm run test:release -- --no-sandbox --disable-gpu
+        env:
+          STREAMDECK_EVIDENCE_DIR: release-evidence
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: stream-deck-launcher-linux-x86_64
+          if-no-files-found: error
+          path: |
+            dist/*.AppImage
+            dist/*.tar.gz
+            dist/SHA256SUMS
+            release-evidence/
+            packaging/linux/RELEASE-NOTES.md
+
+  publish:
+    if: startsWith(github.ref, 'refs/tags/')
+    needs: build
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: stream-deck-launcher-linux-x86_64
+      - name: Create release with verified downloads
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ github.ref_name }}
+          RELEASE_SHA: ${{ github.sha }}
+          VALIDATION_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          cp packaging/linux/RELEASE-NOTES.md release-notes.md
+          printf '\nSource commit: `%s`.\n\nBuild and validation: %s\n' "$RELEASE_SHA" "$VALIDATION_URL" >> release-notes.md
+          gh release create "$RELEASE_TAG" dist/*.AppImage dist/*.tar.gz dist/SHA256SUMS --verify-tag --target "$RELEASE_SHA" --prerelease --title "Stream Deck Launcher $RELEASE_TAG - Linux x86_64 beta" --notes-file release-notes.md
+
